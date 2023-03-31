@@ -1,3 +1,4 @@
+"""This module contains the code to communicate with the language model (e.g., GPT-4)"""
 import os
 import openai
 from langchain.llms import OpenAI
@@ -14,7 +15,8 @@ def embed_text(elements):
     return elements
 
 
-def generate_summary(user_message, document_content):
+def generate_summary(document_content):
+    """this function generates a summary from document content"""
     api_key = os.environ.get("OPENAI_API_KEY")
     llm = OpenAI(temperature=0.5, max_tokens=100, api_key=api_key)
 
@@ -31,7 +33,7 @@ def communicate_with_llm(user_message):
     document_content = get_best_matching_document_content(user_message)
 
     if document_content:
-        summary = generate_summary(user_message, document_content)
+        summary = generate_summary(document_content)
         new_prompt = f"{user_message}\n\nBased on the summary of the relevant information:\n{summary}\n\nPlease provide an informed and natural response: "
         response = llm(new_prompt)
 
