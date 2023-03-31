@@ -1,3 +1,4 @@
+"""this module structures and splits the data then embeds it into Pinecone"""
 import os
 import pinecone
 from dotenv import load_dotenv
@@ -17,11 +18,11 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 document_chunks = text_splitter.split_documents(documents)
 
 embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-index_name = "839567e8-a62f-4575-8acd-64693d352995"
+INDEX_NAME = "839567e8-a62f-4575-8acd-64693d352995"
 
 pinecone.init(api_key=api_key_pinecone, environment="us-central1-gcp")
 
-docsearch = Pinecone.from_documents(document_chunks, embeddings, index_name=index_name)
+docsearch = Pinecone.from_documents(document_chunks, embeddings, index_name=INDEX_NAME)
 
 def get_best_matching_document_content(query):
     """This function returns the best matching document content based on the user's query."""

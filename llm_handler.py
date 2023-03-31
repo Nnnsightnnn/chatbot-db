@@ -20,25 +20,28 @@ def generate_summary(document_content):
     api_key = os.environ.get("OPENAI_API_KEY")
     llm = OpenAI(temperature=0.5, max_tokens=100, api_key=api_key)
 
-    summary_prompt = f"Please provide a brief summary of the following information:\n{document_content}"
+    summary_prompt = (f"Please provide a brief summary of the"
+                      f"following information:\n{document_content}")
     summary = llm(summary_prompt)
     return summary
 
 
 def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
+#initialize llm
     api_key = os.environ.get("OPENAI_API_KEY")
     llm = OpenAI(temperature=0.9, max_tokens=100, api_key=api_key)
-
+#create document content for llm
     document_content = get_best_matching_document_content(user_message)
-
+#logic for document content
     if document_content:
         summary = generate_summary(document_content)
-        new_prompt = f"{user_message}\n\nBased on the summary of the relevant information:\n{summary}\n\nPlease provide an informed and natural response: "
+        new_prompt = (f"{user_message}\n\nBased on the summary of the relevant information:"
+                      f"\n{summary}\n\nPlease provide an informed and natural response: ")
         response = llm(new_prompt)
-
+#logic for no document content
     else:
         response = llm(user_message)
 
-    # Return the response string (replace 'response' with the actual response variable if different)
+# Return the response string (replace 'response' with the actual response variable if different)
     return response
