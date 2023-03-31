@@ -12,13 +12,13 @@ load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
 api_key_pinecone = os.environ.get("PINECONE_API_KEY")
 
-loader = TextLoader('static/7230.txt')
+loader = TextLoader('static/restrict_act.txt')
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 document_chunks = text_splitter.split_documents(documents)
 
 embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-INDEX_NAME = "839567e8-a62f-4575-8acd-64693d352995"
+INDEX_NAME = "restrict-act"
 
 pinecone.init(api_key=api_key_pinecone, environment="us-central1-gcp")
 

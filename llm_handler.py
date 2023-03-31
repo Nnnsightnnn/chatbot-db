@@ -18,7 +18,7 @@ def embed_text(elements):
 def generate_summary(document_content):
     """this function generates a summary from document content"""
     api_key = os.environ.get("OPENAI_API_KEY")
-    llm = OpenAI(temperature=0.5, max_tokens=100, api_key=api_key)
+    llm = OpenAI(temperature=0.2, max_tokens=300, api_key=api_key)
 
     summary_prompt = (f"Please provide a brief summary of the"
                       f"following information:\n{document_content}")
@@ -30,7 +30,7 @@ def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
 #initialize llm
     api_key = os.environ.get("OPENAI_API_KEY")
-    llm = OpenAI(temperature=0.9, max_tokens=100, api_key=api_key)
+    llm = OpenAI(temperature=0.9, max_tokens=200, api_key=api_key)
 #create document content for llm
     document_content = get_best_matching_document_content(user_message)
 #logic for document content
