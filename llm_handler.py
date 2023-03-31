@@ -33,20 +33,10 @@ def communicate_with_llm(user_message):
     if document_content:
         summary = generate_summary(user_message, document_content)
         new_prompt = f"{user_message}\n\nBased on the summary of the relevant information:\n{summary}\n\nPlease provide an informed and natural response: "
+        response = llm(new_prompt)
 
     else:
-        new_prompt = user_message
+        response = llm(user_message)
 
-
-response = llm(new_prompt)
-
-
-# Return the response string (replace 'response' with the actual response variable if different)
-return response
-
-response = llm(user_message)
-
-# Return the response string (replace 'response' with the actual response variable if different)
-return response
-
-# Path: llm_handler.py
+    # Return the response string (replace 'response' with the actual response variable if different)
+    return response
