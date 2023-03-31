@@ -19,4 +19,7 @@ def get_prompt_template():
 
     What is a good name for a company that makes {product}?
     """
-return 
+
+    return prompt
+
+# Path: prompt_template.py
