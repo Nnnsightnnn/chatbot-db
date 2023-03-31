@@ -9,18 +9,15 @@ from langchain.text_splitter import CharacterTextSplitter
 
 load_dotenv()
 
-api_key = os.environ.get("OPENAI_API_KEY")
-api_key_pinecone = os.environ.get("PINECONE_API_KEY")
-
 loader = TextLoader('static/restrict_act.txt')
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 document_chunks = text_splitter.split_documents(documents)
 
-embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-INDEX_NAME = "restrict-act"
+embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+INDEX_NAME = "restrictact"
 
-pinecone.init(api_key=api_key_pinecone, environment="us-central1-gcp")
+pinecone.init(api_key=os.environ.get("PINECONE_API_KEY"), environment="us-central1-gcp")
 
 docsearch = Pinecone.from_documents(document_chunks, embeddings, index_name=INDEX_NAME)
 

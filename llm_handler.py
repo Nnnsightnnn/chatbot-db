@@ -1,9 +1,11 @@
 """This module contains the code to communicate with the language model (e.g., GPT-4)"""
 import os
 import openai
+from dotenv import load_dotenv
 from langchain.llms import OpenAI
 from data_structure import get_best_matching_document_content
 
+load_dotenv()
 
 def embed_text(elements):
     """Your code to embed the text into a vector space"""
@@ -17,8 +19,8 @@ def embed_text(elements):
 
 def generate_summary(document_content):
     """this function generates a summary from document content"""
-    api_key = os.environ.get("OPENAI_API_KEY")
-    llm = OpenAI(temperature=0.2, max_tokens=300, api_key=api_key)
+    openapi_key = os.environ.get("OPENAI_API_KEY")
+    llm = OpenAI(temperature=0.2, max_tokens=300, api_key=openapi_key)
 
     summary_prompt = (f"Please provide a brief summary of the"
                       f"following information:\n{document_content}")
