@@ -9,13 +9,13 @@ from langchain.text_splitter import CharacterTextSplitter
 
 load_dotenv()
 
-loader = TextLoader('static/restrict_act.txt')
+loader = TextLoader('/static/API Documentation _ Alpha Vantage.html')
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 document_chunks = text_splitter.split_documents(documents)
 
 embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
-INDEX_NAME = "restrictact"
+INDEX_NAME = "auto-gpt"
 
 pinecone.init(api_key=os.environ.get("PINECONE_API_KEY"), environment="us-central1-gcp")
 
