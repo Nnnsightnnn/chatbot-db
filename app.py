@@ -1,8 +1,7 @@
 """This module contains the Flask app and call functions for the chatbot"""
-import os
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
-from llm_handler import communicate_with_llm
+from chat_controller import communicate_with_llm
 
 load_dotenv()
 
