@@ -1,7 +1,9 @@
 """This module contains the Flask app and call functions for the chatbot"""
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
-from chat_controller import communicate_with_llm
+from agents.chat_controller import communicate_with_llm
+#from agents.write_file import write_input_to_py_file
+#from agents.coder import main
 
 load_dotenv()
 
@@ -17,8 +19,9 @@ def chat():
     """This function handles the chatbot API"""
     message = request.json.get('message', '')
     # Call your GPT-4 model here to generate a response
+    # main(user_message=message)
     response = generate_gpt4_response(message)
-    return jsonify(response=response)
+    return jsonify(response)
 
 def generate_gpt4_response(message):
     """This function generates a response from the GPT-4 model"""

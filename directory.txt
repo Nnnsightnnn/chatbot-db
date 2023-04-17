@@ -1,0 +1,39 @@
+application/
+│
+├── app.py                              # Main application entry point
+├── requirements.txt                    # Dependencies for the application
+├── .env.temp                           # Template for environment variables
+│
+├── database/                           # Database related modules
+│   ├── __init__.py
+│   ├── local_db.py                     # Local database (cached data)
+│   ├── long_term_db.py                 # Long-term database
+│   └── user_input_db.py                # User-input database
+│
+├── vector_store/                       # Vector store related modules
+│   ├── __init__.py
+|   ├── config.py                       # Configuration settings
+│   ├── conversion.py                   # Convert databases to vector store
+│   └── llm.py                          # Efficient LLM logic
+│
+├── agents/                             # Agent-related modules
+│   ├── __init__.py
+│   ├── base_agent.py                   # Base class for all agents
+│   ├── write_agent.py                  # Agent for writing data to file
+│   ├── append_agent.py                 # Agent for appending data
+│   ├── code_analysis_agent.py          # Agent for analyzing code
+│   ├── code_writer_agent.py            # Agent for writing code
+│   ├── search_agent.py                 # Agent for browsing the internet via Google Search
+│   ├── plan_builder_agent.py           # Agent for interpreting user input to build a plan
+│   └── self_reflection_agent.py        # Agent for self-reflecting on plans
+│
+├── chat_controller.py                  # Module for handling user input and delegating tasks to agents
+│
+├── templates/                          # HTML templates for Flask
+│   ├── base.html                       # Base template for all pages
+│   └── chat_interface.html             # Chat interface page
+│
+└── static/                             # Static files for Flask (CSS, JS, images, etc.)
+    ├── css/
+    ├── js/
+    └── img/
