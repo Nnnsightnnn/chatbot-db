@@ -1,9 +1,11 @@
+--upgrade pip
+python==3.10.4
 flask==2.0.2
 unstructured
 unstructured[local-inference]
 openai
 langchain
 python-dotenv
-pinecone
+pinecone-client
 typing
 tqdm

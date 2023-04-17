@@ -1,13 +1,11 @@
 """this module write input to file"""
 import os
-import config
-import openai
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
 def write_input_to_py_file(input_text: str, file_name: str, directory: str = "ChatbotDB\code"):
+    """Write the input text to a .py file in the specified directory."""
     # Get the absolute path of the parent directory
     parent_dir = os.path.abspath(os.path.join(os.getcwd(), ".."))
 
@@ -22,11 +20,12 @@ def write_input_to_py_file(input_text: str, file_name: str, directory: str = "Ch
 
     # Write the input text to the .py file in the specified directory
     file_path = os.path.join(directory_path, file_name)
-    with open(file_path, "w") as file:
+    with open(file_path, "w", encoding="utf-8") as file:
         file.write(input_text)
 
 
-"""if __name__ == "__main__":
+"""
+if __name__ == "__main__":
     user_input = input("Enter your Python code: ")
     file_name = input("Enter the desired file name (without .py extension): ")
     write_input_to_py_file(user_input, file_name)
