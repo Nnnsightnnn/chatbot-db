@@ -1,4 +1,9 @@
-python==3.8.12
 flask==2.0.2
 unstructured
 unstructured[local-inference]
+openai
+langchain
+python-dotenv
+pinecone
+typing
+tqdm
