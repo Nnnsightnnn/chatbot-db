@@ -18,3 +18,5 @@ DATABASE_DIRECTORY = os.environ.get("DATABASE_DIRECTORY")
 
 ### Local vector store settings ###
 INDEX_FILE = os.environ.get("INDEX_FILE")
+
+# path: config.py
