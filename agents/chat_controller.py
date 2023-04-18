@@ -52,8 +52,8 @@ def communicate_with_llm(user_message):
 
 class ChatController:
     """This class is the main controller for the chatbot"""
-    def __init__(self, chat_model):
-        self.chat_model = chat_model
+    def __init__(self, model):
+        self.model = model
         self.template = f"You're in {config.MODE}-mode.  Assist accordingly"
         self.user_message = ""
         self.response = ""
