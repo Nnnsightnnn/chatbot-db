@@ -1,6 +1,7 @@
 """this module splits a given text into chuncks of a given size"""
 from transformers import GPT2TokenizerFast
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.agents import create_openapi_agent
 
 #from langchain.text_splitter import TokenTextSplitter
 

@@ -3,7 +3,8 @@ import os
 import openai
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from agents.local_db_embedding import get_best_matching_document_content
+from local_db_embedding import get_best_matching_document_content
+import config
 
 load_dotenv()
 
@@ -46,3 +47,35 @@ def communicate_with_llm(user_message):
 
 # Return the response string (replace 'response' with the actual response variable if different)
     return response
+
+class ChatController:
+    """This class is the main controller for the chatbot"""
+    def __init__(self, chat_model):
+        self.chat_model = 
+        self.template = f"You're in {config.MODE}-mode.  Assist accordingly"
+        self.user_message = ""
+        self.response = ""
+
+    def get_user_message(self):
+        """This function gets the user message"""
+        self.user_message = input("Please enter your message: ")
+        return self.user_message
+
+    def get_response(self):
+        """This function gets the response from the language model"""
+        self.response = communicate_with_llm(self.user_message)
+        return self.response
+
+    def print_response(self):
+        """This function prints the response"""
+        print(self.response)
+
+    def run(self):
+        """This function runs the chatbot"""
+        while True:
+            self.get_user_message()
+            self.get_response()
+            self.print_response()
+
+
+# Path: agents/chat_controller.py

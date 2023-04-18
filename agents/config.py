@@ -18,3 +18,6 @@ DATABASE_DIRECTORY = os.environ.get("DATABASE_DIRECTORY")
 
 ### Local vector store settings ###
 INDEX_FILE = os.environ.get("INDEX_FILE")
+
+### MODE Settings ###
+MODE = os.environ.get("MODE")
