@@ -47,7 +47,7 @@ def communicate_with_llm(user_message):
     else:
         response = llm(user_message)
 
-# Return the response string (replace 'response' with the actual response variable if different)
+# Return the response string
     return response
 
 class ChatController:
