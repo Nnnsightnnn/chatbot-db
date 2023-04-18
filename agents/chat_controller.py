@@ -21,7 +21,8 @@ def embed_text(elements):
 def generate_summary(document_content):
     """this function generates a summary from document content"""
     openai.api_key = os.environ.get("OPENAI_API_KEY")
-    llm = ChatOpenAI(temperature=0.3, model_name='gpt-3.5-turbo', max_tokens=1000, api_key=openai.api_key)
+    llm = ChatOpenAI(temperature=0.3, model_name='gpt-3.5-turbo',
+                    max_tokens=1000, api_key=openai.api_key)
     summary_prompt = (f"Please provide a brief summary of the"
                       f"following information:\n{document_content}")
     summary = llm.call_as_llm(summary_prompt)
@@ -32,7 +33,8 @@ def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
 #initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
-    llm = ChatOpenAI(temperature=0.3, model_name='gpt-3.5-turbo', max_tokens=500, api_key=openai.api_key)
+    llm = ChatOpenAI(temperature=0.3, model_name='gpt-3.5-turbo',
+                     max_tokens=500, api_key=openai.api_key)
 #create document content for llm
     document_content = get_best_matching_document_content(user_message)
 #logic for document content
@@ -51,7 +53,7 @@ def communicate_with_llm(user_message):
 class ChatController:
     """This class is the main controller for the chatbot"""
     def __init__(self, chat_model):
-        self.chat_model = 
+        self.chat_model = chat_model
         self.template = f"You're in {config.MODE}-mode.  Assist accordingly"
         self.user_message = ""
         self.response = ""
