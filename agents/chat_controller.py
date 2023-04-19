@@ -3,7 +3,7 @@ import os
 import openai
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from local_db_embedding import get_best_matching_document_content
+from .local_db_embedding import get_best_matching_document_contents
 import config
 
 load_dotenv()
@@ -36,17 +36,17 @@ def communicate_with_llm(user_message):
     llm = ChatOpenAI(temperature=0.3, model_name='gpt-3.5-turbo',
                      max_tokens=500, api_key=openai.api_key)
 #create document content for llm
-    document_content = get_best_matching_document_content(user_message)
+    document_content = get_best_matching_document_contents(user_message)
 #logic for document content
     if document_content:
         summary = generate_summary(document_content)
-        new_prompt = (f"{user_message}\n\nBased on the summary of the relevant information:"
+        new_prompt = (f"{user_message}\n\nBased on the documents:"
                       f"\n{summary}\n\nPlease provide an informed and natural response: ")
         response = llm.call_as_llm(new_prompt)
 #logic for no document content
     else:
         response = llm(user_message)
-
+    print(response)
 # Return the response string
     return response
 
