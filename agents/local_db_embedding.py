@@ -66,3 +66,17 @@ def get_best_matching_document_content(question: str) -> Union[str, None]:
         return best_document.page_content
     else:
         return None
+
+def get_best_matching_documents_content(question: str, num_docs=4) -> Union[str, None]:
+    """Return the best matching document content based on the user's query."""
+    matching_docs = docsearch_instance.similarity_search(question, num_docs=num_docs)
+
+    if matching_docs:
+        # sort the matching_docs list based on similarity score
+        matching_docs.sort(key=lambda x: x.score, reverse=True)
+        # concatenate the content of the top n documents
+        top_n_docs = matching_docs[:num_docs]
+        content = ' '.join([doc.page_content for doc in top_n_docs])
+        return content
+    else:
+        return None
