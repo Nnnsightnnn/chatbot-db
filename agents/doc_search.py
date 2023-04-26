@@ -23,14 +23,16 @@ def pinecone_doc_search(query):
 
 def local_doc_search(query):
     """Search Chroma Index"""
-    # Get the absolute path of the parent directory
     parent_dir = os.path.abspath(os.path.join(os.getcwd(), ".."))
+    print(parent_dir)
     # Ensure the directory exists
-    directory_path = os.path.join(parent_dir, f"chatbotDB/{config.VECTOR_STORE_DIRECTORY}")
+    directory_path = os.path.join(parent_dir, f"{config.VECTOR_STORE_DIRECTORY}")
+    print(directory_path)
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
+    print(directory_path)
     # load Chroma index
     docs = Chroma(persist_directory=directory_path,
                   embedding_function=embeddings)
