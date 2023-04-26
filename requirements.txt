@@ -27,6 +27,7 @@ coloredlogs==15.0.1
 comm==0.1.3
 commonmark==0.9.1
 contourpy==1.0.7
+chromadb
 cryptography==40.0.2
 cycler==0.11.0
 dataclasses-json==0.5.7

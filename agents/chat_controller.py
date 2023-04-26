@@ -3,24 +3,18 @@ import os
 import openai
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from agents.doc_search import doc_search
+from agents.doc_search import pinecone_doc_search
+from agents.doc_search import local_doc_search
+
+import config
 
 load_dotenv()
 
-def embed_text(elements):
-    """Your code to embed the text into a vector space"""
-    openai.api_key = os.environ.get("OPENAI_API_KEY")
-    elements = openai.Embedding.create(
-        input=elements,
-        model="text-embedding-ada-002"
-    )
-    return elements
-
 def generate_summary(document_content):
     """this function generates a summary from document content"""
-    openai.api_key = os.environ.get("OPENAI_API_KEY")
-    llm = ChatOpenAI(temperature=0.3, model_name='gpt-3.5-turbo',
-                    max_tokens=1000, api_key=openai.api_key)
+    
+    llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
+                    max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
     summary_prompt = (f"Please explain"
                       f"following information:\n{document_content} in depth.\n\n")
     summary = llm.call_as_llm(summary_prompt)
@@ -30,10 +24,10 @@ def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
 #initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
-    llm = ChatOpenAI(temperature=0.3, model_name='gpt-3.5-turbo',
-                     max_tokens=500, api_key=openai.api_key)
+    llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
+                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
 #create document content for llm
-    document_content = doc_search(user_message)
+    document_content = local_doc_search(user_message)
 #logic for document content
     if document_content:
         summary = generate_summary(document_content)

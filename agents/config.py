@@ -18,6 +18,11 @@ DATABASE_DIRECTORY = os.environ.get("DATABASE_DIRECTORY")
 
 ### Local vector store settings ###
 INDEX_FILE = os.environ.get("INDEX_FILE")
+VECTOR_STORE_DIRECTORY = os.environ.get("VECTOR_STORE_DIRECTORY")
 
 ### MODE Settings ###
 MODE = os.environ.get("MODE")
+
+### OpenAI Settings ###
+OPENAI_MAX_TOKENS = os.environ.get("OPENAI_MAX_TOKENS")
+OPENAI_TEMPERATURE = os.environ.get("OPENAI_TEMPERATURE")
