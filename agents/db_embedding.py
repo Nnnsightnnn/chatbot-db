@@ -32,7 +32,7 @@ def main():
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     pinecone.init(api_key=config.PINECONE_API_KEY,
                   environment=config.PINECONE_ENVIRONMENT)
-
+    print("Pinecone Initialized")
     text_splitter = CharacterTextSplitter(chunk_size=int(config.CHUNK_SIZE),
                                           chunk_overlap=int(config.CHUNK_OVERLAP))
     loaders = get_text_loaders(str(config.DATABASE_DIRECTORY))
@@ -40,9 +40,11 @@ def main():
         f"Found {len(loaders)} files in {config.DATABASE_DIRECTORY} directory.")
 
     docsearch = None
-
+    num_iterations = 0
     for loader in loaders:
         documents = loader.load()
+        num_iterations += 1
+        print(f"{num_iterations} number of documents loaded")
         document_chunks = text_splitter.split_documents(documents)
 
         if docsearch is None:
@@ -56,15 +58,12 @@ def main():
 
 docsearch_instance = main()
 
-
 def get_best_matching_document_content(question: str) -> Union[str, None]:
     """Return the best matching document content based on the user's query."""
-    matching_docs = docsearch_instance.similarity_search(question)
-
-    if matching_docs:
-        best_document = matching_docs[0]
+    try:
+        best_document = docsearch_instance.similarity_search(question)[0]
         return best_document.page_content
-    else:
+    except (IndexError, TypeError):
         return None
 
 
@@ -74,7 +73,6 @@ def doc_search(query):
     docs = Pinecone.from_existing_index(index_name=config.INDEX_NAME,
                                               embedding=embeddings)
     response = docs.similarity_search(query)
-    print(response)
     return response
 
 # Path agents/local_db_embedding
