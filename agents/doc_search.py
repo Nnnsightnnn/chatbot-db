@@ -12,6 +12,11 @@ def doc_search(query):
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     docs = Pinecone.from_existing_index(index_name=config.INDEX_NAME,
                                               embedding=embeddings)
-    response = docs.similarity_search(query)
-    print(response)
-    return response
+    try:
+        response = docs.similarity_search(query)
+        print(response)
+        return response
+    except (IndexError, TypeError):
+        return None
+
+# Path: agents/db_search.py
