@@ -5,8 +5,8 @@ This module will take user input and return Python script.
 import os
 import openai
 from dotenv import load_dotenv
-from write_file import write_input_to_py_file
-from local_db_embedding import get_best_matching_document_content
+from agents.write_file import write_input_to_py_file
+from agents.db_embedding import get_best_matching_document_content
 from langchain.chat_models import ChatOpenAI
 from tqdm import tqdm
 import config

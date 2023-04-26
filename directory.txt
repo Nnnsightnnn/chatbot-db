@@ -29,9 +29,8 @@ application/
 │   ├── coder.py                        # Agent for writing code
 │   ├── search_agent.py                 # Agent for browsing the internet via Google Search
 │   ├── plan_builder_agent.py           # Agent for interpreting user input to build a plan
+│   ├── chat_controller.py                  # Module for handling user input and delegating tasks to agents
 │   └── self_reflection_agent.py        # Agent for self-reflecting on plans
-│
-├── chat_controller.py                  # Module for handling user input and delegating tasks to agents
 │
 ├── templates/                          # HTML templates for Flask
 │   ├── index.html                      # Base template for all pages

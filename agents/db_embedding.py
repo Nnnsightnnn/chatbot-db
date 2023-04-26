@@ -15,7 +15,7 @@ load_dotenv()
 
 
 print(
-    f"Found files in {config.DATABASE_DIRECTORY} and {config.CHUNK_SIZE} directory.")
+    f"Found files in {config.DATABASE_DIRECTORY}")
 
 
 def get_text_loaders(directory: str) -> List[TextLoader]:
@@ -35,7 +35,7 @@ def main():
 
     text_splitter = CharacterTextSplitter(chunk_size=int(config.CHUNK_SIZE),
                                           chunk_overlap=int(config.CHUNK_OVERLAP))
-    loaders = get_text_loaders(config.DATABASE_DIRECTORY)
+    loaders = get_text_loaders(str(config.DATABASE_DIRECTORY))
     print(
         f"Found {len(loaders)} files in {config.DATABASE_DIRECTORY} directory.")
 
@@ -66,3 +66,15 @@ def get_best_matching_document_content(question: str) -> Union[str, None]:
         return best_document.page_content
     else:
         return None
+
+
+def doc_search(query):
+    """Search Pinecone Index"""
+    embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
+    docs = Pinecone.from_existing_index(index_name=config.INDEX_NAME,
+                                              embedding=embeddings)
+    response = docs.similarity_search(query)
+    print(response)
+    return response
+
+# Path agents/local_db_embedding

@@ -20,8 +20,9 @@ def chat():
     message = request.json.get('message', '')
     # Call your GPT-4 model here to generate a response
     # main(user_message=message)
-    response = generate_gpt4_response(message)
-    return jsonify(response)
+    response = jsonify(response=generate_gpt4_response(message))
+    
+    return response, 200
 
 def generate_gpt4_response(message):
     """This function generates a response from the GPT-4 model"""

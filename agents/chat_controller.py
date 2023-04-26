@@ -1,12 +1,19 @@
 """This module contains the code to communicate with the language model (e.g., GPT-4)"""
+#import sys
 import os
+
+# Add the parent directory of the agents folder to the Python path
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import openai
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from local_db_embedding import get_best_matching_document_content
-import config
+# from local_db_embedding import get_best_matching_document_content
+from agents.db_embedding import doc_search
+#import config
 
 load_dotenv()
+
 
 def embed_text(elements):
     """Your code to embed the text into a vector space"""
@@ -36,48 +43,18 @@ def communicate_with_llm(user_message):
     llm = ChatOpenAI(temperature=0.3, model_name='gpt-3.5-turbo',
                      max_tokens=500, api_key=openai.api_key)
 #create document content for llm
-    document_content = get_best_matching_document_content(user_message)
+    document_content = doc_search(user_message)
 #logic for document content
     if document_content:
         summary = generate_summary(document_content)
         new_prompt = (f"{user_message}\n\nBased on the summary of the relevant information:"
                       f"\n{summary}\n\nPlease provide an informed and natural response: ")
-        response = llm.call_as_llm(new_prompt)
+        response = llm.call_as_llm(message=new_prompt)
 #logic for no document content
     else:
-        response = llm(user_message)
+        response = llm.call_as_llm(message=user_message)
 
 # Return the response string
     return response
-
-class ChatController:
-    """This class is the main controller for the chatbot"""
-    def __init__(self, model):
-        self.model = model
-        self.template = f"You're in {config.MODE}-mode.  Assist accordingly"
-        self.user_message = ""
-        self.response = ""
-
-    def get_user_message(self):
-        """This function gets the user message"""
-        self.user_message = input("Please enter your message: ")
-        return self.user_message
-
-    def get_response(self):
-        """This function gets the response from the language model"""
-        self.response = communicate_with_llm(self.user_message)
-        return self.response
-
-    def print_response(self):
-        """This function prints the response"""
-        print(self.response)
-
-    def run(self):
-        """This function runs the chatbot"""
-        while True:
-            self.get_user_message()
-            self.get_response()
-            self.print_response()
-
 
 # Path: agents/chat_controller.py
