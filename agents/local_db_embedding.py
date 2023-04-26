@@ -1,22 +1,17 @@
-"""this module creates an embedding utilizing an Ada-GPT model and upload to Pinecone."""
+"""This module creates an embedding utilizing an Ada-GPT model and uploads it to Pinecone."""
 
 import os
-from typing import List, Union
-import pinecone
+from typing import List
 from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 
+import pinecone
 import config
 
 load_dotenv()
-
-
-print(
-    f"Found files in {config.DATABASE_DIRECTORY} and {config.CHUNK_SIZE} directory.")
-
 
 def get_text_loaders(directory: str) -> List[TextLoader]:
     """Retrieve a list of TextLoader objects from a given directory."""
@@ -26,57 +21,44 @@ def get_text_loaders(directory: str) -> List[TextLoader]:
         if os.path.isfile(os.path.join(directory, filename))
     ]
 
-
-def main():
+def embed_docs():
     """Create an embedding and upload it to Pinecone."""
+    # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
+
+    # Initialize Pinecone
     pinecone.init(api_key=config.PINECONE_API_KEY,
                   environment=config.PINECONE_ENVIRONMENT)
+    print("Pinecone Initialized")
 
+    # Initialize the text splitter
     text_splitter = CharacterTextSplitter(chunk_size=int(config.CHUNK_SIZE),
                                           chunk_overlap=int(config.CHUNK_OVERLAP))
-    loaders = get_text_loaders(config.DATABASE_DIRECTORY)
-    print(
-        f"Found {len(loaders)} files in {config.DATABASE_DIRECTORY} directory.")
 
-    docsearch = None
+    # Get the list of text loaders
+    loaders = get_text_loaders(str(config.DATABASE_DIRECTORY))
+    print(f"Found {len(loaders)} files in {config.DATABASE_DIRECTORY} directory.")
 
+    # Process documents and upload to Pinecone
+    docs = None
+    num_iterations = 0
     for loader in loaders:
         documents = loader.load()
+        num_iterations += 1
+        print(f"{num_iterations} number of documents loaded")
         document_chunks = text_splitter.split_documents(documents)
 
-        if docsearch is None:
-            docsearch = Pinecone.from_documents(
+        if docs is None:
+            docs = Pinecone.from_documents(
                 document_chunks, embeddings, index_name=config.INDEX_NAME, upsert=True)
         else:
-            docsearch.add_documents(document_chunks, upsert=True)
+            docs.add_documents(document_chunks, upsert=True)
 
-    return docsearch
-
-
-docsearch_instance = main()
+    print("Finished uploading documents to Pinecone")
 
 
-def get_best_matching_document_content(question: str) -> Union[str, None]:
-    """Return the best matching document content based on the user's query."""
-    matching_docs = docsearch_instance.similarity_search(question)
+if __name__ == "__main__":
+    print(f"Found files in {config.DATABASE_DIRECTORY}")
+    embed_docs()
 
-    if matching_docs:
-        best_document = matching_docs[0]
-        return best_document.page_content
-    else:
-        return None
-
-def get_best_matching_documents_content(question: str, num_docs=4) -> Union[str, None]:
-    """Return the best matching document content based on the user's query."""
-    matching_docs = docsearch_instance.similarity_search(question, num_docs=num_docs)
-
-    if matching_docs:
-        # sort the matching_docs list based on similarity score
-        matching_docs.sort(key=lambda x: x.score, reverse=True)
-        # concatenate the content of the top n documents
-        top_n_docs = matching_docs[:num_docs]
-        content = ' '.join([doc.page_content for doc in top_n_docs])
-        return content
-    else:
-        return None
+# Path agents/local_db_embedding.py
