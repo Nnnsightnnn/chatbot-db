@@ -24,7 +24,7 @@ application/
 |   ├── config.py                       # Configuration settings
 │   ├── base_agent.py                   # Base class for all agents
 │   ├── write_file.py                   # Agent for writing data to file
-│   ├── local_db_embedding.py           # Embeds files from database folder
+│   ├── db_embedding.py           # Embeds files from database folder
 │   ├── code_analysis_agent.py          # Agent for analyzing code
 │   ├── coder.py                        # Agent for writing code
 │   ├── search_agent.py                 # Agent for browsing the internet via Google Search
