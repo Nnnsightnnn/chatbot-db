@@ -30,6 +30,7 @@ def local_doc_search(query):
     print(directory_path)
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
+    print(directory_path)
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     print(directory_path)
