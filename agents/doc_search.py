@@ -29,6 +29,7 @@ def local_doc_search(query):
     directory_path = os.path.join(parent_dir, f"chatbotDB/{config.VECTOR_STORE_DIRECTORY}")
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
+    print(directory_path)
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     # load Chroma index

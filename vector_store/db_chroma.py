@@ -6,6 +6,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.indexes.vectorstore import VectorstoreIndexCreator
 
 import config
 
@@ -21,12 +22,12 @@ def get_text_loaders(directory: str) -> List[TextLoader]:
 
 def embed_docs():
     """Create an embedding and upload it to Pinecone."""
-  
+
     # Get the absolute path of the parent directory
     parent_dir = os.path.abspath(os.path.join(os.getcwd(), ".."))
 
     # Ensure the directory exists
-    directory_path = os.path.join(parent_dir, f"chatbotDB/{config.VECTOR_STORE_DIRECTORY}")
+    directory_path = os.path.join(parent_dir, f"chatbot-db/{config.VECTOR_STORE_DIRECTORY}")
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
 
@@ -41,13 +42,16 @@ def embed_docs():
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     # Process documents and embed with Chroma
-    docs = None
+    for loader in loaders:
+        docs = VectorstoreIndexCreator().from_loaders([loader])
     num_iterations = 0
+    docs = None
     for loader in loaders:
         documents = loader.load()
         document_chunks = text_splitter.split_documents(documents)
         num_iterations += 1
         print(f"{num_iterations} number of documents loaded")
+
 
         if docs is None:
             docs = Chroma.from_documents(
@@ -55,12 +59,13 @@ def embed_docs():
                 embedding=embeddings, collection_name=config.INDEX_NAME)
         else:
             docs.add_documents(documents=document_chunks, embedding=embeddings)
+            docs.persist()
 
     print("Finished uploading documents to LocalDB.")
 
 
-if __name__ == "__main__":
-    print(f"Found files in {config.DATABASE_DIRECTORY}")
-    embed_docs()
+#if __name__ == "__main__":
+#    print(f"Found files in {config.DATABASE_DIRECTORY}")
+#    embed_docs()
 
 # Path agents/local_db_embedding.py
