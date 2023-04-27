@@ -27,7 +27,7 @@ def communicate_with_llm(user_message):
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
 #create document content for llm
-    document_content = local_doc_search(user_message)
+    document_content = pinecone_doc_search(user_message)
 #logic for document content
     if document_content:
         summary = generate_summary(document_content)
