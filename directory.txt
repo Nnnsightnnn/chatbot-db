@@ -6,7 +6,7 @@ application/
 ├── directory.txt                       # Base directory
 ├── .env.temp                           # Template for environment variables
 │
-├── database/                           # Database related modules
+├── database/                           # Database related modules and storage
 │   ├── __init__.py
 |   ├── config.py                       # Configuration settings
 │   ├── local_db.py                     # Local database (cached data)
@@ -16,23 +16,22 @@ application/
 ├── vector_store/                       # Vector store related modules
 │   ├── __init__.py
 |   ├── config.py                       # Configuration settings
-│   ├── conversion.py                   # Convert databases to vector store
-│   └── llm.py                          # Efficient LLM logic
+│   ├── db_chroma.py                    # Convert databases to local vector store
+│   └── db_pinecone.py                  # Convert databases to pinecone vector store
 │
 ├── agents/                             # Agent-related modules
 │   ├── __init__.py
 |   ├── config.py                       # Configuration settings
-│   ├── base_agent.py                   # Base class for all agents
 │   ├── write_file.py                   # Agent for writing data to file
-│   ├── db_embedding.py           # Embeds files from database folder
-│   ├── code_analysis_agent.py          # Agent for analyzing code
 │   ├── coder.py                        # Agent for writing code
 │   ├── search_agent.py                 # Agent for browsing the internet via Google Search
 │   ├── plan_builder_agent.py           # Agent for interpreting user input to build a plan
 │   └── self_reflection_agent.py        # Agent for self-reflecting on plans
 │
 ├── chat_controller.py                  # Module for handling user input and delegating tasks to agents
-│
+|
+├── code/                             # Agent-related modules
+│   ├── __init__.py
 ├── templates/                          # HTML templates for Flask
 │   ├── index.html                      # Base template for all pages
 │

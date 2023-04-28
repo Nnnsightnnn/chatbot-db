@@ -1,5 +1,6 @@
 """This module searches the vector_store for the best matching document content"""
 import os
+import chromadb
 from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
@@ -27,15 +28,21 @@ def local_doc_search(query):
     print(parent_dir)
     # Ensure the directory exists
     directory_path = os.path.join(parent_dir, f"{config.VECTOR_STORE_DIRECTORY}")
-    print(directory_path)
+
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
-    print(directory_path)
+
+    if not os.path.exists(directory_path):
+        raise Exception(f"{directory_path} does not exist, nothing can be queried")
+
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
-    print(directory_path)
+
+    client_settings = chromadb.configure(chroma_db_impl="duckdb+parquet", persist_directory=directory_path, anonymized_telemetry=False)
     # load Chroma index
-    docs = Chroma(persist_directory=directory_path,
+    docs = Chroma(collection_name=config.COLLECTION_NAME,
+                  client_settings=client_settings,
+                  persist_directory=directory_path,
                   embedding_function=embeddings)
     try:
         response = docs.similarity_search(query)

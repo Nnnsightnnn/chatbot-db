@@ -1,5 +1,6 @@
 """This module upserts/loads data from local Chroma database"""
 import os
+import chromadb
 from typing import List
 from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -42,8 +43,8 @@ def embed_docs():
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     # Process documents and embed with Chroma
-    for loader in loaders:
-        docs = VectorstoreIndexCreator().from_loaders([loader])
+#    for loader in loaders:
+#        docs = VectorstoreIndexCreator().from_loaders([loader])
     num_iterations = 0
     docs = None
     for loader in loaders:
@@ -54,9 +55,11 @@ def embed_docs():
 
 
         if docs is None:
-            docs = Chroma.from_documents(
-                documents=document_chunks, persist_directory=directory_path,
-                embedding=embeddings, collection_name=config.INDEX_NAME)
+            client_settings = chromadb.configure(chroma_db_impl="duckdb+parquet", 
+                                                 persist_directory=directory_path, anonymized_telemetry=False)
+            docs = Chroma(client_settings=client_settings,
+                persist_directory=directory_path,
+                embedding_function=embeddings, collection_name=config.COLLECTION_NAME)
         else:
             docs.add_documents(documents=document_chunks, embedding=embeddings)
             docs.persist()
@@ -64,8 +67,8 @@ def embed_docs():
     print("Finished uploading documents to LocalDB.")
 
 
-#if __name__ == "__main__":
-#    print(f"Found files in {config.DATABASE_DIRECTORY}")
-#    embed_docs()
+if __name__ == "__main__":
+    print(f"Found files in {config.DATABASE_DIRECTORY}")
+    embed_docs()
 
 # Path agents/local_db_embedding.py

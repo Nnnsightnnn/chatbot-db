@@ -19,6 +19,7 @@ DATABASE_DIRECTORY = os.environ.get("DATABASE_DIRECTORY")
 ### Local vector store settings ###
 INDEX_FILE = os.environ.get("INDEX_FILE")
 VECTOR_STORE_DIRECTORY = os.environ.get("VECTOR_STORE_DIRECTORY")
+COLLECTION_NAME = os.environ.get("COLLECTION_NAME")
 
 ### MODE Settings ###
 MODE = os.environ.get("MODE")
