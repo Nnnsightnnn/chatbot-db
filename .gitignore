@@ -1,5 +1,5 @@
 .env
 credentials.json
-/txt_output
-/pdf_input
-.chroma
+<txt_output>/*
+<pdf_input>/*
+<.chroma>/*
