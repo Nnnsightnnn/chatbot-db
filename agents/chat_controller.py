@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from agents.doc_search import pinecone_doc_search
 from agents.doc_search import local_doc_search
+from agents.memory import DatabaseManager  
 
 import config
 
@@ -22,23 +23,43 @@ def generate_summary(document_content):
 
 def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
-#initialize llm
+
+    # Initialize the DatabaseManager
+    db_manager = DatabaseManager()
+
+    # Initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
-#create document content for llm
+    
+    # Create document content for llm
     document_content = pinecone_doc_search(user_message)
-#logic for document content
+    
+    # Logic for document content
     if document_content:
         summary = generate_summary(document_content)
         new_prompt = (f"{user_message}\n\nBased on the summary of the relevant information:"
                       f"\n{summary}\n\nPlease provide an informed and detailed response: ")
         response = llm.call_as_llm(message=new_prompt)
-#logic for no document content
+    # Logic for no document content
     else:
         response = llm.call_as_llm(message=user_message)
 
-# Return the response string
+    # Insert chat history into the database
+    chat_data = {
+        "user_message": user_message,
+        "response": response
+    }
+    db_manager.insert_record(str(chat_data))
+    
+    # Retrieve and check the last chat record
+    last_chat_record = db_manager.get_last_chat_record()
+    if last_chat_record:
+        print("Last chat record:", last_chat_record)
+    else:
+        print("Failed to retrieve the last chat record")
+
+    # Return the response string
     return response
 
-# Path: agents/chat_controller.py
+#path agent\chat_controller.py

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def write_input_to_py_file(input_text: str, file_name: str, directory: str = "ChatbotDB\code"):
+def write_input_to_py_file(input_text: str, file_name: str, directory: str = "chatbot-db\code_database"):
     """Write the input text to a .py file in the specified directory."""
     # Get the absolute path of the parent directory
     parent_dir = os.path.abspath(os.path.join(os.getcwd(), ".."))

@@ -4,3 +4,6 @@ credentials.json
 txt_output/*
 pdf_input/*
 .chroma/*
+code/*
+database/*.txt*
+database/memory/*
