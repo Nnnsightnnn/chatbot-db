@@ -21,25 +21,47 @@
         #chat-container {
             max-width: 768px;
             margin: 50px auto;
-            background-color: 255, 255, 255, 0.9;
-            color:rgb(255, 255, 255);
+            background-color: rgba(255, 255, 255, 0.9);
+            color: rgb(255, 255, 255);
             border-radius: 5px;
             box-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
             padding: 20px;
             display: flex;
             flex-direction: column;
             height: 80vh;
+            position: relative;
         }
 
-        #messages {
+        #middle-section {
             flex-grow: 1;
-            overflow-y: auto;
             padding: 20px;
             border-bottom: 1px solid #dddddd;
         }
 
+        #messages {
+            background-color: rgba(255, 255, 255, 0.7);
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            border-radius: 5px;
+            color: #000;
+        }
+
         #messages p {
             margin: 10px 0;
+        }
+
+        #image-container {
+            position: absolute; /* Change from absolute to fixed */
+            top: 1px; /* Set the distance from the top of the page */
+            right: -15px; /* Set the distance from the right of the page */
+            width: calc(100% / 75); /* Set the width to 1/5 of the chat box */
+        }
+
+        #image-container img {
+            width: 150px;
+            height: auto;
+            border-radius: 5px;
         }
 
         #chat-form {
@@ -74,35 +96,15 @@
 </head>
 <body>
     <div id="chat-container">
-        <div id="messages"></div>
+        <div id="middle-section">
+            <div id="messages"></div>
+            <div id="image-container">
+                <img src="static/bot_image.jpg" alt="Your Image">
+            </div>
+        </div>
         <form id="chat-form">
             <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
             <button type="submit">Send</button>
         </form>
     </div>
-    <script>
-        document.getElementById('chat-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const userInput = document.getElementById('user-input');
-            const message = userInput.value;
-            userInput.value = '';
-
-            addMessage('User', message);
-
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message})
-            });
-
-            const data = await response.json();
-            addMessage('OpenAI', data.response);
-        });
-
-        function addMessage(sender, message) {
-            const messages = document.getElementById('messages');
-            messages.innerHTML += `<p><strong>${sender}:</strong> ${message}</p>`;
-        }
-    </script>
-</body>
-</html>
+    <script
