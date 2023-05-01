@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('static/background_forest.jpg');
+            background-image: url('static/background_computer.jpg');
             background-size: cover;
             background-position: center;
             margin: 0;
@@ -21,7 +21,7 @@
         #chat-container {
             max-width: 768px;
             margin: 50px auto;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.3);
             color: rgb(255, 255, 255);
             border-radius: 5px;
             box-shadow: 0 3px 5px rgba(0, 0, 0, 0.9);
@@ -107,4 +107,29 @@
             <button type="submit">Send</button>
         </form>
     </div>
-    <script
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value;
+            userInput.value = '';
+
+            addMessage('User', message);
+
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message})
+            });
+
+            const data = await response.json();
+            addMessage('OpenAI', data.response);
+        });
+
+        function addMessage(sender, message) {
+            const messages = document.getElementById('messages');
+            messages.innerHTML += `<p><strong>${sender}:</strong> ${message}</p>`;
+        }
+    </script>
+</body>
+</html>
