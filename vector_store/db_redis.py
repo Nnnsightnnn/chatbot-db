@@ -1,22 +1,38 @@
 """this module embeds chat history into a vector space"""
 
 import os
-import redis
-import openai
-import config
 import json
+import sqlite3
+#from typing import List
+from dotenv import load_dotenv
+#from io import StringIO
 
-from typing import List
+#import redis
+#import openai
+
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.document_loaders import TextLoader
+
 from langchain.vectorstores.redis import Redis
-from agents.memory import DatabaseManager 
-from dotenv import load_dotenv
+#from agents.memory import DatabaseManager
+
+import config
 
 load_dotenv()
 
-filepath = "database/memory/"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+print(f"BASE_DIR: {BASE_DIR}")
+FILEPATH = "/workspaces/chatbot-db/database/memory/memory.sqlite3"
+print(f"FILEPATH: {FILEPATH}")
+
+class Document:
+    def __init__(self, text):
+        self.page_content = text
+        self.metadata = text
+
+def get_all_tables(cursor):
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    return [table[0] for table in cursor.fetchall()]
 
 def embed_docs():
     """Create an embedding and upload it to Redis."""
@@ -27,29 +43,43 @@ def embed_docs():
     text_splitter = CharacterTextSplitter(chunk_size=int(config.CHUNK_SIZE),
                                           chunk_overlap=int(config.CHUNK_OVERLAP))
 
-    # Get the list of text loaders
-    loaders = DatabaseManager().get_database()
+    # Connect to the SQLite database and extract data
+    data = sqlite3.connect(FILEPATH)
+    cursor = data.cursor()
+    
+    # Get all tables in the database
+    tables = get_all_tables(cursor)
 
-    # Process documents and upload to Pinecone
     docs = None
     num_iterations = 0
-    for loader in loaders:
-        documents = loader.load()
-        num_iterations += 1
-        print(f"{num_iterations} number of documents loaded")
-        document_chunks = text_splitter.split_documents(documents)
 
-        if docs is None:
-            docs = Redis.from_documents(docs, 
-                                              embeddings, redis_url="redis://localhost:6379",  
+    # Iterate through all tables
+    for table_name in tables:
+        cursor.execute(f"SELECT * FROM {table_name}")
+        loaders = cursor.fetchall()
+
+        # Process documents and upload to Redis
+        for loader in loaders:
+            num_iterations += 1
+            print(f"{num_iterations} number of documents loaded")
+            # Create a Document object with the text_to_process and pass it to the text_splitter
+            document = Document(loader)
+            document_chunks = text_splitter.split_documents([document])
+
+
+            if docs is None:
+                docs = Redis.from_documents(docs,
+                                              embeddings, redis_url="redis://localhost:6379",
                                               index_name='link')
-        else:
-            docs.add_texts(texts=document_chunks)
-    
+            else:
+                docs.add_texts(texts=document_chunks)
+
+    # Close the database connection
+    data.close()
 
 if __name__ == "__main__":
-    print(f"{filepath} processing...")
+    print(f"{FILEPATH} processing...")
     embed_docs()
-    print(f"{filepath} processed")
+    print(f"{FILEPATH} processed")
 
-# path: vector_store\db_redis.py
+# path: vector_store\db_redis.
