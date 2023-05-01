@@ -5,14 +5,14 @@ import json
 import sqlite3
 #from typing import List
 from dotenv import load_dotenv
-#from io import StringIO
+from io import StringIO
 
 #import redis
 #import openai
 
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
-
+from langchain.document_loaders import TextLoader
 from langchain.vectorstores.redis import Redis
 #from agents.memory import DatabaseManager
 
@@ -62,16 +62,22 @@ def embed_docs():
         for loader in loaders:
             num_iterations += 1
             print(f"{num_iterations} number of documents loaded")
-            # Create a Document object with the text_to_process and pass it to the text_splitter
-            document = Document(loader)
-            document_chunks = text_splitter.split_documents([document])
+            
+            # Convert the loader JSON to a string
+            loader_str = json.dumps(loader)
+            loader_str = loader_str.replace("{", "").replace("}", "")
 
+            print(f"loader_str: {loader_str}")
+            #print(f"document: {document}")
+            document = (f"{loader_str}")
+            # Create a Document object with the loader_str and pass it to the text_splitter
+            document_chunks = text_splitter.split_text(document)
 
             if docs is None:
-                docs = Redis.from_documents(docs,
-                                              embeddings, redis_url="redis://localhost:6379",
+                docs = Redis.from_documents(documents=document_chunks,embedding=embeddings,
+                                              redis_url="redis://localhost:6379",
                                               index_name='link')
-            else:
+                else:
                 docs.add_texts(texts=document_chunks)
 
     # Close the database connection
