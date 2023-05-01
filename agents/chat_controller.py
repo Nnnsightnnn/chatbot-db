@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from agents.doc_search import pinecone_doc_search
 from agents.doc_search import local_doc_search
-from agents.memory import DatabaseManager  
+from agents.memory import Memory 
 
 import config
 
@@ -24,17 +24,17 @@ def generate_summary(document_content):
 def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
 
-    # Initialize the DatabaseManager
-    db_manager = DatabaseManager()
+    # Initialize Memory
+    memory = Memory(file_path="agents/memory.json")
 
     # Initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
-    
+
     # Create document content for llm
     document_content = pinecone_doc_search(user_message)
-    
+
     # Logic for document content
     if document_content:
         summary = generate_summary(document_content)
@@ -45,13 +45,9 @@ def communicate_with_llm(user_message):
     else:
         response = llm.call_as_llm(message=user_message)
 
-    # Insert chat history into the database
-    chat_data = {
-        "user_message": user_message,
-        "response": response
-    }
-    db_manager.insert_record(str(chat_data))
-    
+    # Add memory to memory.json
+    memory.add_memory(user_message, response)
+
     # Retrieve and check the last chat record
     last_chat_record = db_manager.get_last_chat_record()
     if last_chat_record:
