@@ -30,7 +30,7 @@ def get_text_loaders(directory: str) -> List[TextLoader]:
 
 
 def embed_docs():
-    """Create an embedding and upload it to Pinecone."""
+    """Create an embedding and upload it to Redis."""
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     # Initialize the text splitter
