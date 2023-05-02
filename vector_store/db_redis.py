@@ -14,7 +14,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores.redis import Redis
 from llama_index import download_loader
-from agents.memory import Memory
+from memory import Memory
 
 import config
 
