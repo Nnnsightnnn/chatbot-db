@@ -13,6 +13,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores.redis import Redis
+from llama_index import download_loader
 from agents.memory import Memory
 
 import config
@@ -38,8 +39,10 @@ def embed_docs():
                                           chunk_overlap=int(config.CHUNK_OVERLAP))
     # initialize Memory
     Memory(file_path=config.MEMORY_FILE_PATH)
+
+    json_reader = download_loader(config.MEMORY_FILE_PATH)
     # Get the list of text loaders
-    loaders = get_text_loaders(str("database/memory/"))
+    loaders = json_reader()
     print(f"Found {len(loaders)} file as {config.MEMORY_FILE_PATH}.")
 
     # Embed memory into Redis
