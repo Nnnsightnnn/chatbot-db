@@ -4,8 +4,8 @@ import openai
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from agents.doc_search import pinecone_doc_search
-from agents.doc_search import local_doc_search
-from agents.memory import Memory 
+#from agents.doc_search import local_doc_search
+from agents.memory import Memory
 
 import config
 
@@ -13,7 +13,7 @@ load_dotenv()
 
 def generate_summary(document_content):
     """this function generates a summary from document content"""
-    
+
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
     summary_prompt = (f"Please explain"
@@ -25,7 +25,7 @@ def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
 
     # Initialize Memory
-    memory = Memory(file_path="agents/memory.json")
+    memory = Memory(file_path="database/memory/memory.json")
 
     # Initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -49,7 +49,7 @@ def communicate_with_llm(user_message):
     memory.add_memory(user_message, response)
 
     # Retrieve and check the last chat record
-    last_chat_record = db_manager.get_last_chat_record()
+    last_chat_record = memory.retrieve_memory(0)
     if last_chat_record:
         print("Last chat record:", last_chat_record)
     else:

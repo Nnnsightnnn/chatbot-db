@@ -15,6 +15,7 @@ INDEX_NAME = os.environ.get("INDEX_NAME")
 CHUNK_SIZE = os.environ.get("CHUNK_SIZE")
 CHUNK_OVERLAP = os.environ.get("CHUNK_OVERLAP")
 DATABASE_DIRECTORY = os.environ.get("DATABASE_DIRECTORY")
+MEMORY_FILE_PATH = os.environ.get("MEMORY_FILE_PATH")
 
 ### Local vector store settings ###
 INDEX_FILE = os.environ.get("INDEX_FILE")

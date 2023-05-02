@@ -1,11 +1,9 @@
 """This module searches the vector_store for the best matching document content"""
 import os
-import chromadb
 from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
-from langchain.vectorstores import Chroma
-
+from langchain.vectorstores.redis import Redis
 import config
 
 load_dotenv()
@@ -37,13 +35,11 @@ def local_doc_search(query):
 
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
-
-    client_settings = chromadb.configure(chroma_db_impl="duckdb+parquet", persist_directory=directory_path, anonymized_telemetry=False)
-    # load Chroma index
-    docs = Chroma(collection_name=config.COLLECTION_NAME,
-                  client_settings=client_settings,
-                  persist_directory=directory_path,
-                  embedding_function=embeddings)
+    # Initialize Redis index
+    rds = Redis.from_existing_index(index_name='memory',
+                                    embedding=embeddings)
+    # similarity search with Redis
+    docs = rds.similarity_search(query)
     try:
         response = docs.similarity_search(query)
         print(response)
