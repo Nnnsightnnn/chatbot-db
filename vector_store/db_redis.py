@@ -16,7 +16,7 @@ from langchain.document_loaders import TextLoader
 from langchain.vectorstores.redis import Redis
 from llama_index import download_loader
 
-from memory import Memory
+from vector_store.memory import Memory
 
 import config
 
@@ -45,17 +45,25 @@ def embed_docs():
     json_reader = download_loader("JSONReader")
     # Get the list of text loaders
     loader = json_reader()
-    documents = loader.load_data(Path("/database/memory/memory.json"))
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    memory_file_path = os.path.join(script_dir,
+                                    "/workspaces/chatbot-db/database/memory/memory.json")
+    documents = loader.load_data(Path(memory_file_path))
+
+    # Convert Document objects to strings
+    texts = [doc.text for doc in documents]
+
     # Embed memory into Redis
     docs = None
-    for document in documents:
-        document_chunks = text_splitter.split_documents(document)
-        if docs is None:
-            docs = Redis.from_documents(redis_url="redis://localhost:6379",
-                documents=document_chunks, embedding=embeddings,
-                index_name='memory')
-        else:
-            docs.add_documents(document_chunks, embeddings)
+
+    document_chunks = text_splitter.create_documents(texts)
+
+    if docs is None:
+        docs = Redis.from_documents(redis_url="redis://localhost:6379",
+            documents=document_chunks, embedding=embeddings,
+            index_name='memory')
+    else:
+        docs.add_documents(document_chunks, embeddings)
 
 
 if __name__ == "__main__":
