@@ -3,6 +3,7 @@
 import os
 # import json
 # import sqlite3
+from pathlib import Path
 from typing import List
 from dotenv import load_dotenv
 
@@ -14,6 +15,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores.redis import Redis
 from llama_index import download_loader
+
 from memory import Memory
 
 import config
@@ -42,17 +44,12 @@ def embed_docs():
 
     json_reader = download_loader("JSONReader")
     # Get the list of text loaders
-    loaders = json_reader()
-    loaders.load_langchain_documents(config.MEMORY_FILE_PATH)
-    print(loaders)
+    loader = json_reader()
+    documents = loader.load_data(Path("/database/memory/memory.json"))
     # Embed memory into Redis
     docs = None
-    num_iterations = 0
-    for loader in loaders:
-        documents = loaders.load_data(config.MEMORY_FILE_PATH)
-        num_iterations += 1
-        document_chunks = text_splitter.split_documents(documents)
-
+    for document in documents:
+        document_chunks = text_splitter.split_documents(document)
         if docs is None:
             docs = Redis.from_documents(redis_url="redis://localhost:6379",
                 documents=document_chunks, embedding=embeddings,
