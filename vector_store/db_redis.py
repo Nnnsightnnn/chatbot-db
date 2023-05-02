@@ -40,18 +40,17 @@ def embed_docs():
     # initialize Memory
     Memory(file_path=config.MEMORY_FILE_PATH)
 
-    json_reader = download_loader(config.MEMORY_FILE_PATH)
+    json_reader = download_loader("JSONReader")
     # Get the list of text loaders
     loaders = json_reader()
-    print(f"Found {len(loaders)} file as {config.MEMORY_FILE_PATH}.")
-
+    loaders.load_langchain_documents(config.MEMORY_FILE_PATH)
+    print(loaders)
     # Embed memory into Redis
     docs = None
     num_iterations = 0
     for loader in loaders:
-        documents = loader.load()
+        documents = loaders.load_data(config.MEMORY_FILE_PATH)
         num_iterations += 1
-        print(f"{num_iterations} number of documents loaded")
         document_chunks = text_splitter.split_documents(documents)
 
         if docs is None:
