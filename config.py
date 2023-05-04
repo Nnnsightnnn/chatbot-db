@@ -16,6 +16,7 @@ CHUNK_SIZE = os.environ.get("CHUNK_SIZE")
 CHUNK_OVERLAP = os.environ.get("CHUNK_OVERLAP")
 DATABASE_DIRECTORY = os.environ.get("DATABASE_DIRECTORY")
 MEMORY_FILE_PATH = os.environ.get("MEMORY_FILE_PATH")
+REDIS_URL = os.environ.get("REDIS_URL")
 
 ### Local vector store settings ###
 INDEX_FILE = os.environ.get("INDEX_FILE")

@@ -3,8 +3,8 @@ import os
 import openai
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from agents.doc_search import pinecone_doc_search
-#from agents.doc_search import local_doc_search
+#from agents.doc_search import pinecone_doc_search
+from agents.doc_search import local_doc_search
 from agents.memory import Memory
 
 import config
@@ -25,15 +25,15 @@ def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
 
     # Initialize Memory
-    memory = Memory(file_path="database/memory/memory.json")
-
+    memory = Memory(file_path=config.MEMORY_FILE_PATH)
+    
     # Initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
 
     # Create document content for llm
-    document_content = pinecone_doc_search(user_message)
+    document_content = local_doc_search(user_message)
 
     # Logic for document content
     if document_content:
