@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 #from agents.doc_search import pinecone_doc_search
 from agents.doc_search import local_doc_search
-from agents.memory import Memory
+from vector_store.memory import Memory
 
 import config
 
@@ -49,7 +49,7 @@ def communicate_with_llm(user_message):
     memory.add_memory(user_message, response)
 
     # Retrieve and check the last chat record
-    last_chat_record = memory.retrieve_memory(0)
+    last_chat_record = memory.retrieve_memory(memory.get_memory_count() - 1)
     if last_chat_record:
         print("Last chat record:", last_chat_record)
     else:

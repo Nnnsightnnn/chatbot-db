@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List
 from dotenv import load_dotenv
 #import redis
-# import openai
+#import openai
 
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
@@ -66,8 +66,8 @@ def embed_docs():
 
 
 if __name__ == "__main__":
-    print(f"{config.MEMORY_FILE_PATH} processing...")
+    print(f"storing {config.MEMORY_FILE_PATH} in Redis...")
     embed_docs()
     print(f"{config.MEMORY_FILE_PATH} processed")
 
-# path: vector_store\db_redis.
+# path: vector_store\db_redis_memory

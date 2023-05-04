@@ -1,6 +1,9 @@
 """this module is responsible for storing and retrieving memories"""
 import json
 from datetime import datetime
+from vector_store.db_redis_memory import db_redis_memory
+
+db_redis_memory()
 
 class Memory:
     """this class is responsible for storing and retrieving memories"""
