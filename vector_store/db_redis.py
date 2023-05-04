@@ -13,7 +13,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores.redis import Redis
-from llama_index import download_loader
+
 
 import config
 
@@ -44,7 +44,7 @@ def embed_docs():
     loaders = get_text_loaders(str(config.DATABASE_DIRECTORY))
     print(f"Found {len(loaders)} files in {config.DATABASE_DIRECTORY} directory.")
 
-    # Process documents and upload to Pinecone
+    # Process documents and upload to Redis
     docs = None
     num_iterations = 0
     for loader in loaders:
@@ -58,7 +58,7 @@ def embed_docs():
                 documents=document_chunks, embedding=embeddings,
                 index_name='knowledge')
         else:
-            docs.add_documents(document_chunks, embeddings)
+            docs.add_documents(documents=document_chunks, embedding=embeddings)
 
 
 if __name__ == "__main__":

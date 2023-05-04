@@ -22,7 +22,7 @@ def pinecone_doc_search(query):
 """
 
 
-def local_doc_search(query="What did we discuss?"):
+def local_doc_search(query):
     """Search Chroma Index"""
     parent_dir = os.path.abspath(os.path.join(os.getcwd(), ".."))
     print(parent_dir)
@@ -41,7 +41,7 @@ def local_doc_search(query="What did we discuss?"):
     rds = Redis.from_existing_index(index_name='knowledge',
                                     embedding=embeddings, redis_url="redis://localhost:6379")
     # similarity search with Redis
-    docs = rds.similarity_search(query)
+    docs = rds.similarity_search(query, k=5)
     try:
         print(docs)
         return (docs)

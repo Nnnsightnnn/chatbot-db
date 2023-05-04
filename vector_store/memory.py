@@ -1,9 +1,8 @@
 """this module is responsible for storing and retrieving memories"""
 import json
 from datetime import datetime
-from vector_store.db_redis_memory import db_redis_memory
+from vector_store.db_redis_memory import embed_docs
 
-db_redis_memory()
 
 class Memory:
     """this class is responsible for storing and retrieving memories"""
@@ -18,7 +17,7 @@ class Memory:
                 return json.load(file)
         except FileNotFoundError:
             return []
-
+        
     def save_data(self):
         """save data to file"""
         with open(self.file_path, 'w', encoding="utf-8") as file:
@@ -28,6 +27,7 @@ class Memory:
         """add a memory to the data"""
         current_time = str(datetime.now())
         memory = {
+            'page id': len(self.data) + 1,
             'user_message': user_message,
             'response': response,
             'time': current_time

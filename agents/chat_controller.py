@@ -51,9 +51,9 @@ def communicate_with_llm(user_message):
     # Retrieve and check the last chat record
     last_chat_record = memory.retrieve_memory(memory.get_memory_count() - 1)
     if last_chat_record:
-        print("Last chat record:", last_chat_record)
+        None
     else:
-        print("Failed to retrieve the last chat record")
+        print("Failed to SAVE the last chat record")
 
     # Return the response string
     return response

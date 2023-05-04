@@ -15,7 +15,6 @@ from langchain.document_loaders import TextLoader
 from langchain.vectorstores.redis import Redis
 from llama_index import download_loader
 
-from vector_store.memory import Memory
 
 import config
 
@@ -38,8 +37,6 @@ def embed_docs():
     # Initialize the text splitter
     text_splitter = CharacterTextSplitter(chunk_size=int(config.CHUNK_SIZE),
                                           chunk_overlap=int(config.CHUNK_OVERLAP))
-    # initialize Memory
-    Memory(file_path=config.MEMORY_FILE_PATH)
 
     json_reader = download_loader("JSONReader")
     # Get the list of text loaders
@@ -53,17 +50,13 @@ def embed_docs():
     texts = [doc.text for doc in documents]
 
     # Embed memory into Redis
-    docs = None
-
     document_chunks = text_splitter.create_documents(texts)
-
-    if docs is None:
-        docs = Redis.from_documents(redis_url="redis://localhost:6379",
-            documents=document_chunks, embedding=embeddings,
-            index_name='memory')
-    else:
-        docs.add_documents(document_chunks, embeddings)
-
+    docs = Redis.from_documents(documents=document_chunks,
+                                index_name='memory',
+                                embedding=embeddings, redis_url="redis://localhost:6379")
+    
+    #docs = Redis.from_existing_index(index_name='memory', embedding=embeddings, redis_url="redis://localhost:6379")
+    #docs.add_documents(documents=document_chunks, embedding=embeddings)
 
 if __name__ == "__main__":
     print(f"storing {config.MEMORY_FILE_PATH} in Redis...")
