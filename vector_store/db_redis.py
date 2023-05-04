@@ -6,8 +6,7 @@ import os
 from pathlib import Path
 from typing import List
 from dotenv import load_dotenv
-
-# import redis
+#import redis
 # import openai
 
 from langchain.embeddings import OpenAIEmbeddings
