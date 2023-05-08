@@ -1,4 +1,4 @@
-FROM python
+FROM redis-stack-server
 
 WORKDIR /chatbot-db
 
