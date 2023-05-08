@@ -1,7 +1,18 @@
-FROM redis-stack-server
+FROM redislabs/redis-stack:latest
 
+# Copy application files to container
+COPY chatbot-db /chatbot-db
+
+# Set working directory
 WORKDIR /chatbot-db
 
-RUN pip install -r requirements.txt
+# Install application dependencies
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    pip3 install -r requirements.txt
 
-CMD ["python", "app.py"]
+# Expose application port
+EXPOSE 6973 5000
+
+# Start application
+CMD ["python3", "app.py"]
