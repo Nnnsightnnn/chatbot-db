@@ -2,24 +2,10 @@
 import os
 from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
-#from langchain.vectorstores import Pinecone
 from langchain.vectorstores.redis import Redis
 import config
 
 load_dotenv()
-"""
-def pinecone_doc_search(query):
-#    Search Pinecone Index
-    embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
-    docs = Pinecone.from_existing_index(index_name=config.INDEX_NAME,
-                                              embedding=embeddings)
-    try:
-        response = docs.similarity_search(query)
-        print(response)
-        return response
-    except (IndexError, TypeError):
-        return None
-"""
 
 
 def local_doc_search(query):

@@ -1,13 +1,9 @@
 """this module embeds everything in a directory into a vector space"""
 
 import os
-# import json
-# import sqlite3
 from pathlib import Path
 from typing import List
 from dotenv import load_dotenv
-#import redis
-#import openai
 
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter

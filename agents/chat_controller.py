@@ -3,7 +3,6 @@ import os
 import openai
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-#from agents.doc_search import pinecone_doc_search
 from agents.doc_search import local_doc_search
 from vector_store.memory import Memory
 

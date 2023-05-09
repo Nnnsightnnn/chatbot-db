@@ -3,14 +3,11 @@ FROM  redis/redis-stack:latest
 # Create application directory
 RUN mkdir /chatbot-db
 
+# Copy application files to container
+ADD . /chatbot-db
+
 # Set working directory
 WORKDIR /chatbot-db
-
-# Copy application files to container
-ADD https://github.com/Nnnsightnnn/chatbot-db/archive/refs/heads/main.zip /chatbot-db
-
-# Copy requirements file
-COPY requirements.txt .
 
 # Install application dependencies
 RUN apt-get update && \
