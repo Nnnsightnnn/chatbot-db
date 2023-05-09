@@ -6,6 +6,24 @@ RUN mkdir /chatbot-db
 # Copy application files to container
 ADD . /chatbot-db
 
+# Create RediSearch directory
+RUN mkdir /RediSearch
+
+# Add files from RediSearch to directory
+RUN git clone --recursive https://github.com/RediSearch/RediSearch.git
+
+# Navigate to RediSearch
+RUN cd RediSearch
+
+# Installation
+RUN make setup
+RUN make build
+
+RUN make run
+
+# Goto Main Directory
+RUN cd ..
+
 # Set working directory
 WORKDIR /chatbot-db
 
