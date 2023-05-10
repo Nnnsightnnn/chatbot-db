@@ -108,31 +108,38 @@
         </form>
     </div>
     <script>
+// Define the submit event listener for the chat form
 document.getElementById('chat-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const userInput = document.getElementById('user-input');
     const message = userInput.value;
     userInput.value = '';
 
+    // Add the user message to the chat window
     addMessage('User', message);
 
-    addMessage('OpenAI', 'Building response...'); // Display "Building response" message
+    // Add a "Building response" message to the chat window
+    addMessage('OpenAI', 'Building response...');
 
+    // Send a request to the API endpoint to get the response
     const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({message})
     });
 
+    // Parse the JSON response and update the chat window with the response
     const data = await response.json();
-    updateMessage('OpenAI', data.response); // Update message with API response
+    updateMessage('OpenAI', data.response);
 });
 
+// Add a new message to the chat window
 function addMessage(sender, message) {
     const messages = document.getElementById('messages');
     messages.innerHTML += `<p><strong>${sender}:</strong> ${message}</p>`;
 }
 
+// Update the last message in the chat window with a new message
 function updateMessage(sender, message) {
     const messages = document.getElementById('messages');
     const lastMessage = messages.lastChild;
