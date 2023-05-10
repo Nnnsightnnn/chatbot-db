@@ -1,4 +1,4 @@
-FROM  redis/redis-stack:latest
+FROM  redis/redis-stack:7.0.6-RC8
 
 # Create application directory
 RUN mkdir /chatbot-db
@@ -13,6 +13,9 @@ WORKDIR /chatbot-db
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
     pip3 install -r requirements.txt
+
+# Start Redis Server
+RUN ststemctl start redis
 
 # Start application
 CMD ["python3", "app.py"]
