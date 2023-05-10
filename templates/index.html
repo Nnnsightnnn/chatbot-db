@@ -108,28 +108,37 @@
         </form>
     </div>
     <script>
-        document.getElementById('chat-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const userInput = document.getElementById('user-input');
-            const message = userInput.value;
-            userInput.value = '';
+document.getElementById('chat-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userInput = document.getElementById('user-input');
+    const message = userInput.value;
+    userInput.value = '';
 
-            addMessage('User', message);
+    addMessage('User', message);
 
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message})
-            });
+    addMessage('OpenAI', 'Building response...'); // Display "Building response" message
 
-            const data = await response.json();
-            addMessage('OpenAI', data.response);
-        });
+    const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message})
+    });
 
-        function addMessage(sender, message) {
-            const messages = document.getElementById('messages');
-            messages.innerHTML += `<p><strong>${sender}:</strong> ${message}</p>`;
-        }
+    const data = await response.json();
+    updateMessage('OpenAI', data.response); // Update message with API response
+});
+
+function addMessage(sender, message) {
+    const messages = document.getElementById('messages');
+    messages.innerHTML += `<p><strong>${sender}:</strong> ${message}</p>`;
+}
+
+function updateMessage(sender, message) {
+    const messages = document.getElementById('messages');
+    const lastMessage = messages.lastChild;
+    lastMessage.innerHTML = `<strong>${sender}:</strong> ${message}`;
+}
+
     </script>
 </body>
 </html>

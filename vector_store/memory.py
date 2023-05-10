@@ -1,8 +1,6 @@
 """this module is responsible for storing and retrieving memories"""
 import json
 from datetime import datetime
-from vector_store.db_redis_memory import embed_docs
-
 
 class Memory:
     """this class is responsible for storing and retrieving memories"""
@@ -47,6 +45,7 @@ class Memory:
             return None
         
     def get_memory_count(self):
+        """this module returns number of memories"""
         unique_entries = set((entry['user_message'], entry['response']) for entry in self.data)
         return len(unique_entries)
 

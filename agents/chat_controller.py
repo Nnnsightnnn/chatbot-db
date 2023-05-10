@@ -22,14 +22,16 @@ def generate_summary(document_content):
 
 def communicate_with_llm(user_message):
     """Your code to communicate with the language model (e.g., GPT-4)"""
-
+    # Get the path to memory.json
+    parent_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_path = os.path.join(parent_path, f"{config.MEMORY_FILE_PATH}")
     # Initialize Memory
-    memory = Memory(file_path=config.MEMORY_FILE_PATH)
-    
+    memory = Memory(file_path=file_path)
+
     # Initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
-                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
+                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
 
     # Create document content for llm
     document_content = local_doc_search(user_message)
@@ -47,10 +49,13 @@ def communicate_with_llm(user_message):
     # Add memory to memory.json
     memory.add_memory(user_message, response)
 
+    # Print number of memories
+    print(memory.get_memory_count)
+
     # Retrieve and check the last chat record
     last_chat_record = memory.retrieve_memory(memory.get_memory_count() - 1)
     if last_chat_record:
-        None
+        print("Saved last chat record")
     else:
         print("Failed to SAVE the last chat record")
 
