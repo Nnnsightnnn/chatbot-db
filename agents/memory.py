@@ -42,7 +42,7 @@ class Memory:
             return self.data[index]
         else:
             return None
-     
+
     def get_memory_count(self):
         """return the number of memories"""
         unique_entries = set((entry['user_message'], entry['response']) for entry in self.data)
