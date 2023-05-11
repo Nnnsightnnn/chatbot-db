@@ -42,15 +42,15 @@ def communicate_with_llm(user_message):
     """)
 
     if index_name == "neither":
-        response = llm.call_as_llm(f"""
+        response = f"""
         Based on my database, I will need to search the internet
-        """)
+        """
         return response
     else:
-        recall = local_doc_search(user_message, index_name="memory", k=4)
-        recall_prompt = f"""
-        Based on {user_message}, summarize {recall} in less than 3 sentences.
-        """
+        #recall = local_doc_search(user_message, index_name="memory", k=4)
+        #recall_prompt = f"""
+        #Based on {user_message}, summarize {recall} in less than 3 sentences.
+        #"""
 
         # Search for content in index_name for llm
         document_content = local_doc_search(user_message, index_name=index_name, k=3)
