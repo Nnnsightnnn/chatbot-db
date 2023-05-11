@@ -13,7 +13,10 @@ def generate_summary(document_content):
     """Generate a summary from document content."""
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
-    summary_prompt = f"Please explain the following information:\n{document_content} in depth.\n\n"
+    summary_prompt = f"""Please explain the following information:
+    \n{document_content} in depth.\n\n
+    """
+
     summary = llm.call_as_llm(summary_prompt)
     return summary
 
@@ -32,13 +35,22 @@ def communicate_with_llm(user_message):
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
 
     # Choose which index to search
-    index_name = llm.call_as_llm(f"Based on {user_message}, should we utilize coding or fantasy gaming knowledge? Respond with all lowercase coding, knowledge, or neither")
+    index_name = llm.call_as_llm(f"""
+    Based on {user_message}, should we utilize coding 
+    or fantasy gaming knowledge? 
+    Respond with all lowercase coding, knowledge, or 
+    """)
 
     if index_name == "neither":
-        response = llm.call_as_llm("Based on my database, I will need to search the internet")
+        response = llm.call_as_llm(f"""
+        Based on my database, I will need to search the internet
+        """)
         return response
     else:
         recall = local_doc_search(user_message, index_name="memory", k=4)
+        recall_prompt = f"""
+        Based on {user_message}, summarize {recall} in less than 3 sentences.
+        """
 
         # Search for content in index_name for llm
         document_content = local_doc_search(user_message, index_name=index_name, k=3)
@@ -46,7 +58,10 @@ def communicate_with_llm(user_message):
         # Logic for document content
         if document_content:
             summary = generate_summary(document_content)
-            new_prompt = f"Utilizing {recall} and {user_message}\n\nBased on the summary of the relevant information:\n{summary}\n\nPlease provide an informed and detailed response: "
+            new_prompt = f"""Utilizing {user_message}\n\n
+            Based on the summary of the relevant information:
+            \n{summary}\n\nPlease provide an informed and detailed response: 
+            """
             response = llm.call_as_llm(message=new_prompt)
         else:
             response = llm.call_as_llm(message=user_message)
