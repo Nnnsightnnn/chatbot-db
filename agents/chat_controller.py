@@ -32,7 +32,7 @@ def communicate_with_llm(user_message):
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
 
     # Choose which index to search
-    index_name = llm.call_as_llm(f"Based on {user_message}, should we utilize coding or fantasy gaming knowledge? Respond with coding, knowledge, or neither")
+    index_name = llm.call_as_llm(f"Based on {user_message}, should we utilize coding or fantasy gaming knowledge? Respond with all lowercase coding, knowledge, or neither")
 
     if index_name == "neither":
         response = llm.call_as_llm("Based on my database, I will need to search the internet")
@@ -41,7 +41,7 @@ def communicate_with_llm(user_message):
         recall = local_doc_search(user_message, index_name="memory", k=4)
 
         # Search for content in index_name for llm
-        document_content = local_doc_search(user_message, index_name=index_name, k=5)
+        document_content = local_doc_search(user_message, index_name=index_name, k=3)
 
         # Logic for document content
         if document_content:
