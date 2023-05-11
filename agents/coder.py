@@ -6,7 +6,7 @@ import os
 import openai
 from dotenv import load_dotenv
 from write_file import write_input_to_py_file
-from doc_search import pinecone_doc_search
+from doc_search import local_doc_search
 from langchain.chat_models import ChatOpenAI
 from tqdm import tqdm
 import config
@@ -16,7 +16,7 @@ load_dotenv()
 
 def generate_code_alpha(user_message):
     """Utilizes document content to generate code."""
-    document_content = pinecone_doc_search(user_message)
+    document_content = local_doc_search(user_message, index_name="coding", k=5)
     openai.api_key = os.environ.get("OPENAI_API_KEY")
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)

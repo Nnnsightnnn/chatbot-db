@@ -34,7 +34,7 @@ def communicate_with_llm(user_message):
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
 
     # Create document content for llm
-    document_content = local_doc_search(user_message)
+    document_content = local_doc_search(user_message, index_name="knowledge", k=5)
 
     # Logic for document content
     if document_content:
@@ -48,9 +48,6 @@ def communicate_with_llm(user_message):
 
     # Add memory to memory.json
     memory.add_memory(user_message, response)
-
-    # Print number of memories
-    print(memory.get_memory_count)
 
     # Retrieve and check the last chat record
     last_chat_record = memory.retrieve_memory(memory.get_memory_count() - 1)

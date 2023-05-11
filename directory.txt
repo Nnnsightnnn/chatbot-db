@@ -16,9 +16,11 @@ application/
 ├── vector_store/                       # Vector store related modules
 │   ├── __init__.py
 |   ├── config.py                       # Configuration settings
-│   ├── db_chroma.py                    # Convert databases to local vector store
-│   └── db_pinecone.py                  # Convert databases to pinecone vector store
-│
+│   ├── db_redis.py                     # Convert databases to local vector store
+│   ├── db_redis_memory.py 
+│   ├── memory.py                       # Memory class
+│   ├──memory_snippet_generator.py      # Slices up memory.json
+│   ├──   
 ├── agents/                             # Agent-related modules
 │   ├── __init__.py
 |   ├── config.py                       # Configuration settings
@@ -35,27 +37,9 @@ application/
 ├── templates/                          # HTML templates for Flask
 │   ├── index.html                      # Base template for all pages
 │
-├── static/                             # Static files for Flask/React (CSS, JS, images, etc.)
-│   ├── css/
-│   ├── js/
-│   └── img/
-│
-└── frontend/                           # React application directory
-    ├── node_modules/
-    ├── package.json
-    ├── package-lock.json
-    ├── public/
-    │   ├── index.html
-    │   ├── favicon.ico
-    │   └── manifest.json
-    └── src/
-        ├── index.js
-        ├── App.js
-        ├── components/
-        │   └── ...
-        ├── containers/
-        │   └── ...
-        ├── utils/
-        │   └── ...
-        └── styles/
-            └── ...
+└──static/                             # Static files for Flask/React (CSS, JS, images, etc.)
+    ├── css/
+    ├── js/
+        └── img/
+
+
