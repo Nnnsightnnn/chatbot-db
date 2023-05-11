@@ -7,15 +7,15 @@ import config
 load_dotenv()
 
 
-def local_doc_search(query):
+def local_doc_search(query, index_name='knowledge', k=5):
     """this function searches the vector_store for the best matching document content"""
     # Initialize OpenAI embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     # Initialize Redis index
-    rds = Redis.from_existing_index(index_name='knowledge',
+    rds = Redis.from_existing_index(index_name=index_name,
                                     embedding=embeddings, redis_url="redis://localhost:6379")
     # similarity search with Redis
-    docs = rds.similarity_search(query, k=5)
+    docs = rds.similarity_search(query, k=k)
     try:
         return docs
     except (IndexError, TypeError):

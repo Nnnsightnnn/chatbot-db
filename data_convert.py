@@ -1,7 +1,4 @@
-"""This code checks if a file in the input directory is a PDF file and structures it using the `partition_pdf()` function."""
-
 import os
-import json
 from io import StringIO
 from unstructured.partition.pdf import partition_pdf
 from unstructured.cleaners.core import clean_non_ascii_chars
@@ -51,10 +48,18 @@ for file_name in file_list:
 
         # Load JSON content
         with open(input_file_path, "r", encoding="utf-8") as input_file:
-            json_content = json.load(input_file)
+            json_content = input_file.read()
 
         # Convert JSON content to a string representation
-        file_content = json.dumps(json_content, indent=2)
+        file_content = json_content
+
+    elif file_name.endswith(".txt"):
+        input_file_path = os.path.join(INPUT_DIRECTORY_PATH, file_name)
+        output_file_path = os.path.join(OUTPUT_DIRECTORY_PATH, f"{file_name[:-4]}_cleaned.txt")
+
+        # Read the contents of the text file
+        with open(input_file_path, "r", encoding="utf-8") as input_file:
+            file_content = input_file.read()
 
     if file_content:
         # Apply the clean_non_ascii_chars function on the file content

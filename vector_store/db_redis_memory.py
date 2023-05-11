@@ -16,7 +16,6 @@ from langchain.document_loaders import TextLoader
 from langchain.vectorstores.redis import Redis
 from llama_index import download_loader
 
-
 import config
 
 load_dotenv()
@@ -64,12 +63,13 @@ def embed_docs():
                                 index_name='memory',
                                 embedding=embeddings, redis_url="redis://localhost:6379")
     
-    #docs = Redis.from_existing_index(index_name='memory', embedding=embeddings, redis_url="redis://localhost:6379")
-    #docs.add_documents(documents=document_chunks, embedding=embeddings)
+    docs = Redis.from_existing_index(index_name='memory', embedding=embeddings, redis_url="redis://localhost:6379")
+    docs.add_documents(documents=document_chunks, embedding=embeddings)
 
 if __name__ == "__main__":
     print(f"storing {config.MEMORY_FILE_PATH} in Redis...")
     embed_docs()
+    snippet_generator()
     print(f"{config.MEMORY_FILE_PATH} processed")
 
 # path: vector_store\db_redis_memory
