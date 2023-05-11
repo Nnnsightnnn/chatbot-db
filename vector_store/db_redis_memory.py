@@ -1,6 +1,7 @@
 """this module embeds chat history into a vector space"""
 
 import os
+import glob
 # import json
 # import sqlite3
 from pathlib import Path
@@ -42,9 +43,17 @@ def embed_docs():
     # Get the list of text loaders
     loader = json_reader()
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    memory_file_path = os.path.join(script_dir,
-                                    "database/memory/memory.json")
-    documents = loader.load_data(Path(memory_file_path))
+    memory_dir = os.path.join(script_dir, "database/memory")
+    
+    # Find files with "(snippet)" in the name
+    pattern = os.path.join(memory_dir, "*snippet*")
+    memory_file_paths = glob.glob(pattern)
+
+    documents = []
+    for memory_file_path in memory_file_paths:
+        # Load data from each file
+        data = loader.load_data(Path(memory_file_path))
+        documents.extend(data)
 
     # Convert Document objects to strings
     texts = [doc.text for doc in documents]
