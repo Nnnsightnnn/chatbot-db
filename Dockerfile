@@ -1,18 +1,18 @@
-FROM redis/redis-stack:7.0.6-RC8
+FROM python:3.11.3
 
 # Create application directory
-RUN mkdir /chatbot-db
+WORKDIR /chatbot-db
 
 # Copy application files to container
-COPY . /chatbot-db
-
-# Set working directory
-WORKDIR /chatbot-db
+COPY . .
 
 # Install application dependencies
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
-    pip3 install -r requirements.txt
+    apt-get install -y python3-pip && \
+    pip3 install --no-cache-dir -r requirements.txt && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Start application
-CMD redis-server & python3 app.py
+CMD ["python3", "app.py"]
