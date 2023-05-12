@@ -1,0 +1,2 @@
+"Utilizing langchain and openai,
+create a script for me that implement an agent that will search the internet"

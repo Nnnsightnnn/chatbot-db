@@ -56,7 +56,7 @@ def name_release(code_response):
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
     code_prompt = (f"Please name this release {code_response}"
-                   f"Respond with the name of the release utilizing naming conventions, do not use quotes in response")
+                   f"Respond with three words to name the release utilizing naming conventions, do not use quotes in response")
     release_name = llm.call_as_llm(code_prompt)
     return release_name
 

@@ -35,47 +35,46 @@ def communicate_with_llm(user_message):
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
 
     # Choose which index to search
-    index_name = llm.call_as_llm(f"""
-    Based on {user_message}, should we utilize coding 
-    or fantasy gaming knowledge? 
-    Respond with all lowercase coding, knowledge, or 
-    """)
+#    index_name = llm.call_as_llm(f"""
+#    Based on {user_message}, should we utilize coding 
+#    or fantasy gaming knowledge? 
+#    Respond with all lowercase coding, knowledge, or 
+#    """)
 
-    if index_name == "neither":
-        response = f"""
-        Based on my database, I will need to search the internet
-        """
-        return response
-    else:
+#    if index_name == "neither":
+#        response = f"""
+#        Based on my database, I will need to search the internet
+#        """
+#        return response
         #recall = local_doc_search(user_message, index_name="memory", k=4)
         #recall_prompt = f"""
         #Based on {user_message}, summarize {recall} in less than 3 sentences.
         #"""
 
         # Search for content in index_name for llm
-        document_content = local_doc_search(user_message, index_name=index_name, k=3)
+    document_content = local_doc_search(user_message, index_name="knowledge", k=5)
 
-        # Logic for document content
-        if document_content:
-            summary = generate_summary(document_content)
-            new_prompt = f"""Utilizing {user_message}\n\n
-            Based on the summary of the relevant information:
-            \n{summary}\n\nPlease provide an informed and detailed response: 
-            """
-            response = llm.call_as_llm(message=new_prompt)
-        else:
-            response = llm.call_as_llm(message=user_message)
+    # Logic for document content
+    if document_content:
+        summary = generate_summary(document_content)
+        new_prompt = f"""Utilizing {user_message}\n\n
+        Based on the summary of the relevant information:
+        \n{summary}\n\nPlease provide an informed and detailed response: 
+        """
+        response = llm.call_as_llm(message=new_prompt)
+    else:
+        response = llm.call_as_llm(message=user_message)
 
-        # Add memory to memory.json
-        memory.add_memory(user_message, response)
+    # Add memory to memory.json
+    memory.add_memory(user_message, response)
 
-        # Retrieve and check the last chat record
-        last_chat_record = memory.retrieve_memory(memory.get_memory_count() - 1)
+    # Retrieve and check the last chat record
+    last_chat_record = memory.retrieve_memory(memory.get_memory_count() - 1)
 
-        if last_chat_record:
-            print("Saved the last chat record")
-        else:
-            print("Failed to save the last chat record")
+    if last_chat_record:
+        print("Saved the last chat record")
+    else:
+        print("Failed to save the last chat record")
 
     # Return the response string
     return response

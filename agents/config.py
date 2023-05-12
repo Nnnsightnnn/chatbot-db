@@ -6,6 +6,7 @@ load_dotenv()
 ### Credentials ###
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
+SERPAPI_API_KEY = os.environ.get("SERPAPI_API_KEY")
 
 ### Pinecone settings ###
 PINECONE_ENVIRONMENT = os.environ.get("PINECONE_ENVIRONMENT")
@@ -23,9 +24,8 @@ INDEX_FILE = os.environ.get("INDEX_FILE")
 VECTOR_STORE_DIRECTORY = os.environ.get("VECTOR_STORE_DIRECTORY")
 COLLECTION_NAME = os.environ.get("COLLECTION_NAME")
 
-### MODE Settings ###
-MODE = os.environ.get("MODE")
-
 ### OpenAI Settings ###
 OPENAI_MAX_TOKENS = os.environ.get("OPENAI_MAX_TOKENS")
 OPENAI_TEMPERATURE = os.environ.get("OPENAI_TEMPERATURE")
+
+# path: config.py

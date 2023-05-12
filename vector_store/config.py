@@ -6,6 +6,7 @@ load_dotenv()
 ### Credentials ###
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
+SERPAPI_API_KEY = os.environ.get("SERPAPI_API_KEY")
 
 ### Pinecone settings ###
 PINECONE_ENVIRONMENT = os.environ.get("PINECONE_ENVIRONMENT")
