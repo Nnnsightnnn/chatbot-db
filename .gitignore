@@ -4,6 +4,8 @@ txt_output/*
 pdf_input/*
 code/*
 database/*.txt*
-database/memory/*
-database/source_data/coding/*
-database/source_data/dnd/*
+vector_store/database/memory/*
+vector_store/database/memory/memory/*
+vector_store/database/source_data/coding/*
+vector_store/database/source_data/dnd/*
+vector_store/__pycache__/*

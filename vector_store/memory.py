@@ -1,52 +1,97 @@
-"""this module is responsible for storing and retrieving memories"""
 import json
-from datetime import datetime
+import os
 
-class Memory:
-    """this class is responsible for storing and retrieving memories"""
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self.data = self.load_data()
+def load_json(file_path):
+    """
+    Load JSON data from a file.
 
-    def load_data(self):
-        """load data from file"""
-        try:
-            with open(self.file_path, 'r', encoding="utf-8") as file:
-                return json.load(file)
-        except FileNotFoundError:
-            return []
-        
-    def save_data(self):
-        """save data to file"""
-        with open(self.file_path, 'w', encoding="utf-8") as file:
-            json.dump(self.data, file, indent=4)
+    Args:
+        file_path (str): Path to the JSON file.
 
-    def add_memory(self, user_message, response):
-        """add a memory to the data"""
-        current_time = str(datetime.now())
-        memory = {
-            'page id': len(self.data) + 1,
-            'user_message': user_message,
-            'response': response,
-            'time': current_time
-        }
-        self.data.append(memory)
-        self.save_data()
+    Returns:
+        dict: Parsed JSON data.
+    """
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+    return data
 
-    def get_memories(self):
-        """return all memories"""
-        return self.data
+def save_json(data, file_path):
+    """
+    Save JSON data to a file.
 
-    def retrieve_memory(self, index):
-        """retrieve a memory by index"""
-        if 0 <= index < len(self.data):
-            return self.data[index]
+    Args:
+        data (dict): JSON data to be saved.
+        file_path (str): Path to save the JSON file.
+    """
+    with open(file_path, 'w') as f:
+        json.dump(data, f, indent=2)
+
+def split_response(response, max_words):
+    """
+    Split a response into smaller snippets based on the maximum number of words.
+
+    Args:
+        response (str): The response to be split.
+        max_words (int): Maximum number of words in each snippet.
+
+    Returns:
+        list: List of response snippets.
+    """
+    words = response.split()
+    snippets = []
+    current_snippet = []
+    word_count = 0
+
+    for word in words:
+        if word_count + 1 <= max_words:
+            current_snippet.append(word)
+            word_count += 1
         else:
-            return None
-        
-    def get_memory_count(self):
-        """this module returns number of memories"""
-        unique_entries = set((entry['user_message'], entry['response']) for entry in self.data)
-        return len(unique_entries)
+            snippets.append(' '.join(current_snippet))
+            current_snippet = [word]
+            word_count = 1
 
-# Path: agents/memory.py
+    if current_snippet:
+        snippets.append(' '.join(current_snippet))
+
+    return snippets
+
+def generate_snippets(data, max_words):
+    """
+    Generate response snippets for each item in the data.
+
+    Args:
+        data (list): List of items containing responses.
+        max_words (int): Maximum number of words in each snippet.
+
+    Returns:
+        list: List of response snippets.
+    """
+    snippets = []
+
+    for item in data:
+        response = item['response']
+        item_snippets = split_response(response, max_words)
+        snippets.extend(item_snippets)
+
+    return snippets
+
+def main():
+    """
+    Main function to execute the script.
+    """
+    main_dir = os.path.dirname(os.path.realpath(__file__))
+    file_dir = os.path.join(main_dir, "database/memory/")
+    json_file_path = os.path.join(file_dir, "memory.json")
+    max_words = 30
+
+    data = load_json(json_file_path)
+    snippets = generate_snippets(data, max_words)
+
+    for i, snippet in enumerate(snippets):
+        output_file_path = os.path.join(file_dir, f"snippet_{i}.json")
+        snippet_data = {'response_snippet': snippet}
+        save_json(snippet_data, output_file_path)
+
+if __name__ == '__main__':
+    main()
