@@ -12,13 +12,13 @@ load_dotenv()
 
 def generate_summary(document_content):
     """Generate a summary from document content."""
-    llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
+    llm_summary = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo-0301',
                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
     summary_prompt = f"""Please explain the following information:
     \n{document_content} in depth.\n\n
     """
 
-    summary = llm.call_as_llm(summary_prompt)
+    summary = llm_summary.call_as_llm(summary_prompt)
     return summary
 
 def communicate_with_llm(user_message):
@@ -35,31 +35,14 @@ def communicate_with_llm(user_message):
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
                      max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
 
-    # Choose which index to search
-#    index_name = llm.call_as_llm(f"""
-#    Based on {user_message}, should we utilize coding 
-#    or fantasy gaming knowledge? 
-#    Respond with all lowercase coding, knowledge, or 
-#    """)
+    llm_context = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo-0301',
+                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
 
-#    if index_name == "neither":
-#        response = f"""
-#        Based on my database, I will need to search the internet
-#        """
-#        return response
-#    recall = local_doc_search(user_message, index_name="memory", k=4)
-#    recall_prompt = f"""
-##        Summarize {recall} and in less than 3 sentences.
-#        Then with that in mind, answer {user_message}
-    
-#    creative_search_prompt = f"""
-#        You're a dungeon master for a dnd campaign,
-#        pick one of the following list
-#        to develop an encounter for the campaign: The Book of Dragons,
-#        Drow the Underdar, Elder Evils, Fiend Folio,
-#        Libris Mortis, Lords of Madness, Monster Manual, Monster Manual II, 
-#   """
 
+    # Create a context summary from last 15 chat records
+    context = memory.retrieve_memory(memory.get_memory_count() - 15)
+    recall = "Nothing yet"
+    llm_context.call_as_llm(message=f"(summarize this: {context} in 3 very short sentences)")
         # Search for content in index_name for llm
     document_content = local_doc_search(user_message, index_name="knowledge", k=5)
 
@@ -67,7 +50,7 @@ def communicate_with_llm(user_message):
     if document_content:
 #        encounter = llm.call_as_llm(creative_search_prompt) 
         summary = generate_summary(document_content)
-        new_prompt = f"""Answer {user_message}\n\n
+        new_prompt = f"""Our previous conversation has been about {recall}, Answer {user_message}\n\n
         based on the following:
         \n{summary}\n\nPlease provide an informed and detailed response in beautiful prose.: 
         """

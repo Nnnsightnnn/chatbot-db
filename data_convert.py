@@ -29,7 +29,7 @@ for file_name in file_list:
     file_content = ""
     if file_name.endswith(".pdf"):
         input_file_path = os.path.join(INPUT_DIRECTORY_PATH, file_name)
-        output_file_path = os.path.join(OUTPUT_DIRECTORY_PATH, f"{file_name[:-4]}_cleaned.txt")
+        output_file_path = os.path.join(OUTPUT_DIRECTORY_PATH, f"{file_name[:-4]}.txt")
 
         # Structure PDF file
         elements = partition_pdf(input_file_path)

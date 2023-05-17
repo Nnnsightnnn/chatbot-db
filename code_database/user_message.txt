@@ -1,2 +1,1 @@
-"Utilizing langchain and openai,
-create a script for me that implement an agent that will search the internet"
+"Utilizing langchain, Redis and openai, create a script that I can chat with and remembers what we talked about"
