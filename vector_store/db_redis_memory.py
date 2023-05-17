@@ -69,7 +69,6 @@ def embed_docs():
 if __name__ == "__main__":
     print(f"storing {config.MEMORY_FILE_PATH} in Redis...")
     embed_docs()
-    snippet_generator()
     print(f"{config.MEMORY_FILE_PATH} processed")
 
 # path: vector_store\db_redis_memory

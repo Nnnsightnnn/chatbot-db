@@ -7,15 +7,18 @@
     <link rel="stylesheet" href="static/styles.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-image: url('static/background_computer.jpg');
             background-size: cover;
             background-position: center;
             margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: "Lucida Console", Monaco, monospace; /* Use a monospaced font with better legibility */
+            font-size: 16px; /* Adjust font size for readability */
+            color: #faf6f6; /* Set font color to off-white */
+            background-color: #000000; /* Set a black background for contrast */
+            text-shadow: 1px 1px 1px rgba(226, 156, 65, 0.5); /* Add a subtle text shadow */
+            letter-spacing: 0.5px; /* Decrease letter spacing for better readability */
+            line-height: 1.5; /* Adjust line height for improved legibility */
+            padding: 20px; /* Add some padding to the body for spacing */
         }
 
         #chat-container {
@@ -119,7 +122,7 @@ document.getElementById('chat-form').addEventListener('submit', async (e) => {
     addMessage('User', message);
 
     // Add a "Building response" message to the chat window
-    addMessage('OpenAI', 'Building response...');
+    addMessage('Volo', 'dramatic pause...');
 
     // Send a request to the API endpoint to get the response
     const response = await fetch('/api/chat', {
@@ -130,7 +133,7 @@ document.getElementById('chat-form').addEventListener('submit', async (e) => {
 
     // Parse the JSON response and update the chat window with the response
     const data = await response.json();
-    updateMessage('OpenAI', data.response);
+    updateMessage('Volo', data.response);
 });
 
 // Add a new message to the chat window

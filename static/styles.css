@@ -1,9 +1,10 @@
 <style>
     body {
+        font-family: "Courier New", monospace; /* Use a monospaced font for a retro computer feel */
         font-size: large;
-        color: rgb(233, 17, 17); /* set font color to white */
-        text-decoration: #faf6f6;
-        text-shadow: rgb(226, 156, 65) 1px 1px 1px;
-        font-weight: bold; /* increase font weight to make it clearer */
+        color: #faf6f6; /* Set font color to off-white */
+        text-shadow: 1px 1px 1px rgb(226, 156, 65); /* Add a slight text shadow */
+        letter-spacing: 2px; /* Increase letter spacing for a slightly pixelated effect */
+        line-height: 1.2; /* Adjust line height for better readability */
     }
 </style>

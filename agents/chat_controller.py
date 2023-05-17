@@ -4,6 +4,7 @@ import openai
 from langchain.chat_models import ChatOpenAI
 from agents.doc_search import local_doc_search
 from vector_store.memory import Memory
+from vector_store import memory_snippet_generator
 
 import config
 
@@ -46,20 +47,29 @@ def communicate_with_llm(user_message):
 #        Based on my database, I will need to search the internet
 #        """
 #        return response
-        #recall = local_doc_search(user_message, index_name="memory", k=4)
-        #recall_prompt = f"""
-        #Based on {user_message}, summarize {recall} in less than 3 sentences.
-        #"""
+#    recall = local_doc_search(user_message, index_name="memory", k=4)
+#    recall_prompt = f"""
+##        Summarize {recall} and in less than 3 sentences.
+#        Then with that in mind, answer {user_message}
+    
+#    creative_search_prompt = f"""
+#        You're a dungeon master for a dnd campaign,
+#        pick one of the following list
+#        to develop an encounter for the campaign: The Book of Dragons,
+#        Drow the Underdar, Elder Evils, Fiend Folio,
+#        Libris Mortis, Lords of Madness, Monster Manual, Monster Manual II, 
+#   """
 
         # Search for content in index_name for llm
     document_content = local_doc_search(user_message, index_name="knowledge", k=5)
 
     # Logic for document content
     if document_content:
+#        encounter = llm.call_as_llm(creative_search_prompt) 
         summary = generate_summary(document_content)
-        new_prompt = f"""Utilizing {user_message}\n\n
-        Based on the summary of the relevant information:
-        \n{summary}\n\nPlease provide an informed and detailed response: 
+        new_prompt = f"""Answer {user_message}\n\n
+        based on the following:
+        \n{summary}\n\nPlease provide an informed and detailed response in beautiful prose.: 
         """
         response = llm.call_as_llm(message=new_prompt)
     else:
@@ -72,6 +82,7 @@ def communicate_with_llm(user_message):
     last_chat_record = memory.retrieve_memory(memory.get_memory_count() - 1)
 
     if last_chat_record:
+        memory_snippet_generator.main()
         print("Saved the last chat record")
     else:
         print("Failed to save the last chat record")
