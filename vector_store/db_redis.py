@@ -52,7 +52,7 @@ def embed_docs():
         if docs is None:
             docs = Redis.from_documents(redis_url="redis://localhost:6379",
                 documents=document_chunks, embedding=embeddings,
-                index_name='coding')
+                index_name='knowledge')
         else:
             docs.add_documents(documents=document_chunks, embedding=embeddings)
 

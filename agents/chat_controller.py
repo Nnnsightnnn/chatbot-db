@@ -51,7 +51,7 @@ def communicate_with_llm(user_message):
 #        encounter = llm.call_as_llm(creative_search_prompt) 
         summary = generate_summary(document_content)
         new_prompt = f"""Our previous conversation has been about {recall}, Answer {user_message}\n\n
-        based on the following:
+        based on these scrolls,:
         \n{summary}\n\nPlease provide an informed and detailed response in beautiful prose.: 
         """
         response = llm.call_as_llm(message=new_prompt)
