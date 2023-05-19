@@ -31,6 +31,6 @@ def generate_gpt4_response(message):
     return message
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
 
 # path: app.py
