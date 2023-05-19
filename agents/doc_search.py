@@ -13,7 +13,7 @@ def local_doc_search(query, index_name='knowledge', k=5):
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     # Initialize Redis index
     rds = Redis.from_existing_index(index_name=index_name,
-                                    embedding=embeddings, redis_url="redis://localhost:6379")
+                                    embedding=embeddings, redis_url=config.REDIS_URL)
     # similarity search with Redis
     docs = rds.similarity_search(query, k=k)
     try:

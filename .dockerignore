@@ -1,0 +1,12 @@
+.env
+credentials.json
+txt_output/*
+pdf_input/*
+code/*
+database/*.txt*
+vector_store/database/memory/*
+vector_store/database/memory/memory/*
+vector_store/database/memory/knowledge/*
+vector_store/database/source_data/coding/*
+vector_store/database/source_data/dnd/*
+vector_store/__pycache__/*
