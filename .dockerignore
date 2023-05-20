@@ -1,4 +1,3 @@
-.env
 credentials.json
 txt_output/*
 pdf_input/*
