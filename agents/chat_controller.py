@@ -17,9 +17,25 @@ def generate_summary(document_content):
     summary_prompt = f"""Please explain the following information:
     \n{document_content} in depth.\n\n
     """
-
     summary = llm_summary.call_as_llm(summary_prompt)
     return summary
+
+def simple_chat_data(user_message):
+    """One prompt and one search chat"""
+    llm_short = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, openai_api_key=config.OPENAI_API_KEY,
+                           max_tokens=config.OPENAI_MAX_TOKENS, model_name='gpt-3.5-turbo-0301', streaming=True)
+    # Search for content using the user message
+    context = local_doc_search(user_message)
+    #Build the prompt
+    prompt = f"""
+    Answer {user_message}\n\n
+        based on these scrolls,:
+        \n{context}\n
+        \nPlease provide an informed and detailed response in beautiful prose.:
+    """
+    # Call the llm
+    response = llm_short.call_as_llm(message=prompt)
+    return response
 
 def communicate_with_llm(user_message):
     """Communicate with the language model (e.g., GPT-4)."""
@@ -49,10 +65,10 @@ def communicate_with_llm(user_message):
     # Logic for document content
     if document_content:
 #        encounter = llm.call_as_llm(creative_search_prompt) 
-        summary = generate_summary(document_content)
+#        summary = generate_summary(document_content)
         new_prompt = f"""Our previous conversation has been about {recall}, Answer {user_message}\n\n
         based on these scrolls,:
-        \n{summary}\n\nPlease provide an informed and detailed response in beautiful prose.: 
+        \n{document_content}\n\nPlease provide an informed and detailed response in beautiful prose.: 
         """
         response = llm.call_as_llm(message=new_prompt)
     else:
