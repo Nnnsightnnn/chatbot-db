@@ -1,7 +1,8 @@
 """This module contains the Flask app and call functions for the chatbot"""
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
-from agents.chat_controller import communicate_with_llm
+# from agents.chat_controller import communicate_with_llm
+from agents.chat_controller import simple_chat_data
 
 #from agents.write_file import write_input_to_py_file
 #from agents.coder import main
@@ -27,7 +28,7 @@ def chat():
 
 def generate_gpt4_response(message):
     """This function generates a response from the GPT-4 model"""
-    message = communicate_with_llm(message)
+    message = simple_chat_data(message)
     return message
 
 if __name__ == '__main__':
