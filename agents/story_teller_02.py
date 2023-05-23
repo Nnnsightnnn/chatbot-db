@@ -1,15 +1,20 @@
-import textwrap
-import openai
+"""this module is used to generate a novel based on a seed text."""
+
 import os
 import json
-from langchain.chat_models.openai import ChatOpenAI 
+import textwrap
+import openai
+from langchain.chat_models.openai import ChatOpenAI
 import config
 
-def generateNovel(seed_text):
+
+def generate_novel(seed_text):
+    """This function generates a novel based on a seed text."""
     # Initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
-                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
+                     max_tokens=config.OPENAI_MAX_TOKENS,
+                     api_key=config.OPENAI_API_KEY, streaming=True)
     prompt_text = f"""
      Stage 1
         Create a outline for a novel based on this {seed_text}.  
@@ -36,32 +41,39 @@ def generateNovel(seed_text):
         The novel ends with Anya finding a cure for her father and saving his life.
     Stage 2 
         Utilizing the response from above as seed text...create a detailed plot for a novel.
-        De-limit each plot point with a new line to idicate a new part to the novel.
+        De-limit the plot with a new line to idicate when new part should start to the novel.
     """
+
+    # File Storage location
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(dir_path, 'broad_plot.json')
 
     # Step 1: Generate a broad plot
     broad_plot = llm.call_as_llm(prompt_text)
-    with open('broad_plot.json', 'w') as f:
-        json.dump(broad_plot, f)
+    with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(broad_plot, file)
+    print("The broad plot has been successfully written to 'broad_plot.json")
 
     # Step 2: Iterate through plot in chunks, giving it more depth
-    with open('broad_plot.json') as f:
-        broad_plot = json.load(f)
+    with open(file_path, 'w', encoding='utf-8') as file:
+        broad_plot = json.load(file)
     detailed_plot = []
     part_id = 0
-    for chunk in divideIntoParts(broad_plot):
+    for chunk in divide_into_parts(broad_plot):
         parts = llm.call_as_llm(f"""
         You're a novelist, create a more detailed and descriptive version of:
         {chunk},
         """)
         detailed_plot.append({"part_id": part_id, "text": parts})
         part_id += 1
-    with open('detailed_plot.json', 'w') as f:
-        json.dump(detailed_plot, f)
+    detail_file_path = os.path.join(dir_path, 'detailed_plot.json')
+    with open(detail_file_path, 'w', encoding='utf-8') as file:
+        json.dump(detailed_plot, file)
+    print("The detailed plot has been successfully written to 'detailed_plot.json")
 
     # Step 3: Iterate through detailed plot, creating descriptive scenes
-    with open('detailed_plot.json') as f:
-        detailed_plot = json.load(f)
+    with open(detail_file_path, 'w', encoding='utf-8') as file:
+        detailed_plot = json.load(file)
     scene_descriptions = []
     chapter_id = 0
     for part in detailed_plot:
@@ -71,14 +83,17 @@ def generateNovel(seed_text):
         {plot_point}
         """
         scene = llm.call_as_llm(scene_prompt)
-        scene_descriptions.append({"chapter_id": chapter_id, "text": scene, "part_id": part["part_id"]})
+        scene_descriptions.append(
+            {"chapter_id": chapter_id, "text": scene, "part_id": part["part_id"]})
         chapter_id += 1
-    with open('scene_descriptions.json', 'w') as f:
-        json.dump(scene_descriptions, f)
+    scene_file_path = os.path.join(dir_path, 'scene_descriptions.json')
+    with open(scene_file_path, 'w', encoding='utf-8') as file:
+        json.dump(scene_descriptions, file)
+    print("The scene descriptions have been successfully written to 'scene_descriptions.json'")
 
     # Step 4: Iterate through each scene, creating final, beautifully descriptive scenes
-    with open('scene_descriptions.json') as f:
-        scene_descriptions = json.load(f)
+    with open(scene_file_path, 'w', encoding='utf-8') as file:
+        scene_descriptions = json.load(file)
     final_novel = []
     page_id = 0
     for chapter in scene_descriptions:
@@ -88,36 +103,46 @@ def generateNovel(seed_text):
         {scene}
         """
         final_edit = llm.call_as_llm(final_edit_prompt)
-        final_novel.append({"page_id": page_id, "text": final_edit, "chapter_id": chapter["chapter_id"]})
+        final_novel.append(
+            {"page_id": page_id, "text": final_edit, "chapter_id": chapter["chapter_id"]})
         page_id += 1
-    with open('final_novel.json', 'w') as f:
-        json.dump(final_novel, f)
+    final_file_path = os.path.join(dir_path, 'final_novel.json')
+    with open(final_file_path, 'w', encoding='utf-8') as file:
+        json.dump(final_novel, file)
 
     # Write final novel to a text file
-    with open('final_novel.json') as f:
-        final_novel = json.load(f)
-    with open('novel.txt', 'w') as f:
+    with open(final_file_path, 'w', encoding='utf-8') as file:
+        final_novel = json.load(file)
+    novel_file_path = os.path.join(dir_path, 'novel.txt')
+    with open(novel_file_path, 'w', encoding='utf-8') as file:
         for page in final_novel:
-            f.write(f"Page {page['page_id']}, Chapter {page['chapter_id']}\n\n{page['text']}\n\n")
+            file.write(
+                f"Page {page['page_id']}, Chapter {page['chapter_id']}\n\n{page['text']}\n\n")
 
     print("The novel has been successfully written to 'novel.txt'")
     return
 
 # Helper function to divide text into manageable chunks
-def divideIntoChunks(text):
-    # This function divides the text into chunks of up to 400 words.
+
+
+def divide_into_chunks(text):
+    """This function divides the text into chunks of up to 400 words."""
     return textwrap.wrap(text, 400)
 
-def divideIntoParts(text):
-    # This function divides the text into parts based on new lines.
+
+def divide_into_parts(text):
+    """This function divides the text into parts based on new lines."""
     return text.split('\n')
 
+
 if __name__ == "__main__":
-    seed_text = input(f"""
-    The guardinals have no record of their origin. They have been
+    INPUT_TEXT = """
+        The guardinals have no record of their origin. They have been
 the protectors of Elysium for all of the plane’s recorded history.
 For as long as Elysium has known the guardinals, there have
 been the Celestial Lion and his Five Companions, exemplars
-and epitomes of their respective kind. 
-""")
-    generateNovel(seed_text)
+and epitomes of their respective kind.
+"""
+    generate_novel(INPUT_TEXT)
+
+#path agents/story_teller_02.py
