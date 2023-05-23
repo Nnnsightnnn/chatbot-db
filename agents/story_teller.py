@@ -1,13 +1,13 @@
+
+import os
 import textwrap
 import openai
-import os
+
 from langchain.chat_models.openai import ChatOpenAI 
 import config
 
 def generateNovel(seed_text):
     # Initialize llm
-    seed_text = f"""
-    """
     prompt_text = f"""
      Stage 1
         Create a outline for a novel based on this {seed_text}.  
@@ -83,9 +83,9 @@ def generateNovel(seed_text):
         page_id += 1
 
         # Write final novel to a text file
-    with open('novel.txt', 'w') as f:
+    with open('novel.txt', 'w', encoding='utf-8') as file:
         for page in final_novel:
-            f.write(f"Page {page['page_id']}, Chapter {page['chapter_id']}\n\n{page['text']}\n\n")
+            file.write(f"Page {page['page_id']}, Chapter {page['chapter_id']}\n\n{page['text']}\n\n")
 
     print("The novel has been successfully written to 'novel.txt'")
     return final_novel

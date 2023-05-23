@@ -4,11 +4,22 @@ import os
 import json
 import textwrap
 import openai
+
+from dotenv import load_dotenv
 from langchain.chat_models.openai import ChatOpenAI
 import config
 
+load_dotenv()
 
-def generate_novel(seed_text):
+INPUT_TEXT = """
+        The guardinals have no record of their origin. They have been
+the protectors of Elysium for all of the plane’s recorded history.
+For as long as Elysium has known the guardinals, there have
+been the Celestial Lion and his Five Companions, exemplars
+and epitomes of their respective kind.
+"""
+
+def generate_novel(seed_text=INPUT_TEXT):
     """This function generates a novel based on a seed text."""
     # Initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -48,18 +59,23 @@ def generate_novel(seed_text):
     dir_path = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(dir_path, 'broad_plot.json')
 
+    # Check if 'data' directory exists. If not, create it
+    if not os.path.exists(file_path):
+        os.makedirs(file_path)
+
     # Step 1: Generate a broad plot
     broad_plot = llm.call_as_llm(prompt_text)
     with open(file_path, 'w', encoding='utf-8') as file:
         json.dump(broad_plot, file)
+    file.close()
     print("The broad plot has been successfully written to 'broad_plot.json")
 
     # Step 2: Iterate through plot in chunks, giving it more depth
     with open(file_path, 'w', encoding='utf-8') as file:
-        broad_plot = json.load(file)
+        second_plot = json.load(file)
     detailed_plot = []
     part_id = 0
-    for chunk in divide_into_parts(broad_plot):
+    for chunk in divide_into_parts(second_plot):
         parts = llm.call_as_llm(f"""
         You're a novelist, create a more detailed and descriptive version of:
         {chunk},
@@ -67,8 +83,12 @@ def generate_novel(seed_text):
         detailed_plot.append({"part_id": part_id, "text": parts})
         part_id += 1
     detail_file_path = os.path.join(dir_path, 'detailed_plot.json')
+        # Check if 'data' directory exists. If not, create it
+    if not os.path.exists(detail_file_path):
+        os.makedirs(detail_file_path)
     with open(detail_file_path, 'w', encoding='utf-8') as file:
         json.dump(detailed_plot, file)
+    file.close()
     print("The detailed plot has been successfully written to 'detailed_plot.json")
 
     # Step 3: Iterate through detailed plot, creating descriptive scenes
@@ -87,8 +107,13 @@ def generate_novel(seed_text):
             {"chapter_id": chapter_id, "text": scene, "part_id": part["part_id"]})
         chapter_id += 1
     scene_file_path = os.path.join(dir_path, 'scene_descriptions.json')
+    # Check if 'data' directory exists. If not, create it
+    if not os.path.exists(scene_file_path):
+        os.makedirs(scene_file_path)
     with open(scene_file_path, 'w', encoding='utf-8') as file:
         json.dump(scene_descriptions, file)
+
+    file.close()
     print("The scene descriptions have been successfully written to 'scene_descriptions.json'")
 
     # Step 4: Iterate through each scene, creating final, beautifully descriptive scenes
@@ -107,18 +132,25 @@ def generate_novel(seed_text):
             {"page_id": page_id, "text": final_edit, "chapter_id": chapter["chapter_id"]})
         page_id += 1
     final_file_path = os.path.join(dir_path, 'final_novel.json')
+        # Check if 'data' directory exists. If not, create it
+    if not os.path.exists(final_file_path):
+        os.makedirs(final_file_path)
     with open(final_file_path, 'w', encoding='utf-8') as file:
         json.dump(final_novel, file)
+    file.close()
 
     # Write final novel to a text file
     with open(final_file_path, 'w', encoding='utf-8') as file:
         final_novel = json.load(file)
     novel_file_path = os.path.join(dir_path, 'novel.txt')
+    # Check if 'data' directory exists. If not, create it
+    if not os.path.exists(novel_file_path):
+        os.makedirs(novel_file_path)
     with open(novel_file_path, 'w', encoding='utf-8') as file:
         for page in final_novel:
             file.write(
                 f"Page {page['page_id']}, Chapter {page['chapter_id']}\n\n{page['text']}\n\n")
-
+    file.close()
     print("The novel has been successfully written to 'novel.txt'")
     return
 
@@ -136,13 +168,6 @@ def divide_into_parts(text):
 
 
 if __name__ == "__main__":
-    INPUT_TEXT = """
-        The guardinals have no record of their origin. They have been
-the protectors of Elysium for all of the plane’s recorded history.
-For as long as Elysium has known the guardinals, there have
-been the Celestial Lion and his Five Companions, exemplars
-and epitomes of their respective kind.
-"""
-    generate_novel(INPUT_TEXT)
+    generate_novel()
 
 #path agents/story_teller_02.py
