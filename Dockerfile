@@ -15,4 +15,4 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Start application
-CMD ["python3", "app.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app", "python3", "app.py"]

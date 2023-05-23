@@ -10,3 +10,4 @@ vector_store/database/memory/knowledge/*
 vector_store/database/source_data/coding/*
 vector_store/database/source_data/dnd/*
 vector_store/__pycache__/*
+__pycache__/*

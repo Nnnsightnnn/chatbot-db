@@ -25,7 +25,7 @@ def simple_chat_data(user_message):
     llm_short = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, openai_api_key=config.OPENAI_API_KEY,
                            max_tokens=config.OPENAI_MAX_TOKENS, model_name='gpt-3.5-turbo-0301', streaming=True)
     # Search for content using the user message
-    context = local_doc_search(user_message)
+    context = local_doc_search(query=user_message)
     #Build the prompt
     prompt = f"""
     Answer {user_message}\n\n
