@@ -19,39 +19,21 @@ def generate_novel():
                      max_tokens=config.OPENAI_MAX_TOKENS,
                      api_key=config.OPENAI_API_KEY, streaming=True)
     seed_text = """
-        The guardinals have no record of their origin. They have been
-the protectors of Elysium for all of the plane’s recorded history.
-For as long as Elysium has known the guardinals, there have
-been the Celestial Lion and his Five Companions, exemplars
-and epitomes of their respective kind.
+        Three winding tales intersect for the main character, Uri, a hill dwarf monk,
+        
+        
 """
     prompt_text = f"""
      Step 1
-        Create an outline for a novel based on this {seed_text}.
-        Follow this outline template:
+        Create an extensive outline for a novel based on this {seed_text}.
+        Follow this outline template, but feel free to add more details if you wish:
         The novel is set in (insert) setting.
         The main character is (insert) main character.
         The main character's goal is to (insert) goal.
-        The main character's obstacles are (insert) obstacles.
+        (Do 5 times) The main character's obstacles are (insert) obstacles.
         The main character's allies are (insert) allies.
         The main character's enemies are (insert) enemies.
         The novel ends with (insert) ending.
-        
-        Here is an example of how this prompt template could be used to 
-        generate a plot for a novel based on the seed text "A young woman 
-        travels to a faraway land in search of a cure for her dying father."
-        
-        The novel is set in a medieval fantasy world.
-        The main character is a young woman named Anya.
-        Anya's goal is to find a cure for her dying father.
-        Anya's obstacles are the dangers of the journey,
-        the evil forces that are trying to stop her,
-        and her own doubts and fears.
-        Anya's allies are her friends and family,
-        the people she meets along the way, and her own inner strength.
-        Anya's enemies are the evil forces that are trying to stop her,
-        and her own doubts and fears.
-        The novel ends with Anya finding a cure for her father and saving his life.
     
     Step 2 
         Utilizing your response...create a detailed plot for a novel.
@@ -77,8 +59,10 @@ and epitomes of their respective kind.
     for chunk in divide_into_parts(second_plot):
         print(f"Generating a detailed plot for part {part_id}")
         parts = llm.call_as_llm(f"""
-        You're a novelist, improve this section of a plot, create a more detailed and descriptive version of:
-        {chunk},
+        You are R.A. Salvatore, the fantasy writer, 
+        converting a plot into a series of chapters.
+        Create a more detailed and descriptive version of:
+        {chunk}, de-limit where new chapters should start with '|'
         """)
         detailed_plot.append({"part_id": part_id, "text": parts})
         part_id += 1
@@ -94,11 +78,12 @@ and epitomes of their respective kind.
     scene_descriptions = []
     chapter_id = 0
     for part in plot_chapter:
-        print(f"Generating a detailed plot for part {chapter_id}")
+        print(f"Generating a descriptive scenes for chapter {chapter_id}")
         plot_part = part["text"]
         scene_prompt = f"""
-        You're a novelist, generate a scenes, and de-limit with a '|', from this section of a plot:
-        {plot_part}
+        You are R.A. Salvatore, the fantasy writer, 
+        generate a highly atmospheric and detailed scenes from these chapters: {plot_part}, 
+        and de-limit with a '|', from this section of a plot:
         """
         unsplit_scenes = llm.call_as_llm(scene_prompt)
         scenes = divide_into_parts(unsplit_scenes)
@@ -116,17 +101,20 @@ and epitomes of their respective kind.
         scene_descriptions = json.load(file)
     final_novel = []
     page_id = 0
+  
     for chapter in scene_descriptions:
-        print(f"Generating a detailed plot for part {page_id}")
+        print(f"Generating a scene descriptions for page {page_id}")
         scene = chapter["text"]
         final_edit_prompt = f"""
-        You're a novelist, create a more detailed and descriptive version of:
+        You are R.A. Salvatore, the fantasy writer, 
+        convert each of these scenes into several highly atmospheric and conversation laden scenes:
         {scene}
         """
         final_edit = llm.call_as_llm(final_edit_prompt)
         final_novel.append(
             {"page_id": page_id, "text": final_edit, "chapter_id": chapter["chapter_id"]})
         page_id += 1
+
     final_file_path = os.path.join(dir_path, 'final_novel.json')
     with open(final_file_path, 'w', encoding='utf-8') as file:
         json.dump(final_novel, file)
@@ -148,7 +136,7 @@ def divide_into_chunks(text):
     return textwrap.wrap(text, 400)
 
 def divide_into_parts(text):
-    """This function divides the text into parts based on new lines."""
+    """This function divides the text into parts based on the pipe character."""
     return text.split('|')
 
 
