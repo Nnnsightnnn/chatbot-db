@@ -58,11 +58,7 @@ and epitomes of their respective kind.
     dir_path = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(dir_path, 'broad_plot.json')
 
-    # Check if 'data' directory exists. If not, create it
-    #if not os.path.exists(file_path):
-    #   os.mkdir(file_path)
-    print("The data directory has been successfully created")
-
+    print("Generating a novel based on the seed text...")
     # Step 1: Generate a broad plot
     broad_plot = llm.call_as_llm(prompt_text)
     with open(file_path, 'w', encoding='utf-8') as file:
@@ -75,6 +71,7 @@ and epitomes of their respective kind.
     detailed_plot = []
     part_id = 0
     for chunk in divide_into_parts(second_plot):
+        print(f"Generating a detailed plot for part {part_id}")
         parts = llm.call_as_llm(f"""
         You're a novelist, improve this section of a plot, create a more detailed and descriptive version of:
         {chunk},
@@ -82,28 +79,29 @@ and epitomes of their respective kind.
         detailed_plot.append({"part_id": part_id, "text": parts})
         part_id += 1
     detail_file_path = os.path.join(dir_path, 'detailed_plot.json')
-        # Check if 'data' directory exists. If not, create it
-    #if not os.path.exists(detail_file_path):
-    #    os.makedirs(detail_file_path)
+
     with open(detail_file_path, 'w', encoding='utf-8') as file:
         json.dump(detailed_plot, file)
     print("The detailed plot has been successfully written to 'detailed_plot.json")
 
     # Step 3: Iterate through detailed plot, creating descriptive scenes
     with open(detail_file_path, 'r', encoding='utf-8') as file:
-        detailed_plot = json.load(file)
+        plot_chapter = json.load(file)
     scene_descriptions = []
     chapter_id = 0
-    for part in detailed_plot:
-        plot_point = part["text"]
+    for part in plot_chapter:
+        print(f"Generating a detailed plot for part {chapter_id}")
+        plot_part = part["text"]
         scene_prompt = f"""
         You're a novelist, generate a scenes, and de-limit with a '|', from this section of a plot:
-        {plot_point}
+        {plot_part}
         """
-        scene = llm.call_as_llm(scene_prompt)
-        scene_descriptions.append(
-            {"chapter_id": chapter_id, "text": scene, "part_id": part["part_id"]})
-        chapter_id += 1
+        unsplit_scenes = llm.call_as_llm(scene_prompt)
+        scenes = divide_into_parts(unsplit_scenes)
+        for scene in scenes:
+            scene_descriptions.append(
+                {"chapter_id": chapter_id, "text": scene, "part_id": part["part_id"]})
+            chapter_id += 1
     scene_file_path = os.path.join(dir_path, 'scene_descriptions.json')
     with open(scene_file_path, 'w', encoding='utf-8') as file:
         json.dump(scene_descriptions, file)
@@ -115,6 +113,7 @@ and epitomes of their respective kind.
     final_novel = []
     page_id = 0
     for chapter in scene_descriptions:
+        print(f"Generating a detailed plot for part {page_id}")
         scene = chapter["text"]
         final_edit_prompt = f"""
         You're a novelist, create a more detailed and descriptive version of:
