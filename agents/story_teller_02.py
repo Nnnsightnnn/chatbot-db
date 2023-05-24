@@ -26,8 +26,9 @@ been the Celestial Lion and his Five Companions, exemplars
 and epitomes of their respective kind.
 """
     prompt_text = f"""
-     Stage 1
-        Create a outline for a novel based on this {seed_text}.  
+     Step 1
+        Create an outline for a novel based on this {seed_text}.
+        Follow this outline template:
         The novel is set in (insert) setting.
         The main character is (insert) main character.
         The main character's goal is to (insert) goal.
@@ -35,9 +36,11 @@ and epitomes of their respective kind.
         The main character's allies are (insert) allies.
         The main character's enemies are (insert) enemies.
         The novel ends with (insert) ending.
+        
         Here is an example of how this prompt template could be used to 
         generate a plot for a novel based on the seed text "A young woman 
         travels to a faraway land in search of a cure for her dying father."
+        
         The novel is set in a medieval fantasy world.
         The main character is a young woman named Anya.
         Anya's goal is to find a cure for her dying father.
@@ -49,8 +52,9 @@ and epitomes of their respective kind.
         Anya's enemies are the evil forces that are trying to stop her,
         and her own doubts and fears.
         The novel ends with Anya finding a cure for her father and saving his life.
-    Stage 2 
-        Utilizing the response from above as seed text...create a detailed plot for a novel.
+    
+    Step 2 
+        Utilizing your response...create a detailed plot for a novel.
         De-limit the plot with a '|' to idicate when new part should start to the novel.
     """
 
