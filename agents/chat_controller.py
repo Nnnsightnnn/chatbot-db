@@ -23,7 +23,7 @@ def generate_summary(document_content):
 def simple_chat_data(user_message):
     """One prompt and one search chat"""
     llm_short = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, openai_api_key=config.OPENAI_API_KEY,
-                           max_tokens=config.OPENAI_MAX_TOKENS, model_name='gpt-3.5-turbo-0301', streaming=True)
+                           max_tokens=config.OPENAI_MAX_TOKENS, model_name='gpt-3.5-turbo-0301')
     # Search for content using the user message
     context = local_doc_search(query=user_message)
     #Build the prompt
@@ -49,10 +49,10 @@ def communicate_with_llm(user_message):
     # Initialize llm
     openai.api_key = os.environ.get("OPENAI_API_KEY")
     llm = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo',
-                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
+                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
 
     llm_context = ChatOpenAI(temperature=config.OPENAI_TEMPERATURE, model_name='gpt-3.5-turbo-0301',
-                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY, streaming=True)
+                     max_tokens=config.OPENAI_MAX_TOKENS, api_key=config.OPENAI_API_KEY)
 
 
     # Create a context summary from last 15 chat records
